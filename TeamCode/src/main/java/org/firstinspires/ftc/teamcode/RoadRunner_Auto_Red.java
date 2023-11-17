@@ -73,6 +73,7 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         robot.viperSlideLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.viperSlideLift.setPower(1);
 
+
         while (opModeInInit()) {
             telemetry.addData("Realtime analysis", pipeline.getPropPosition());
             telemetry.update();
@@ -96,6 +97,15 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     goTo3();
                 })
+                .strafeLeft(12)
+                .lineToSplineHeading(new Pose2d(34, -28, Math.toRadians(-90)))
+                .addDisplacementMarker(() -> {
+                    rotateDown();
+                })
+                .addDisplacementMarker(() -> {
+
+                })
+                .waitSeconds(2)
                 .build();
 
         switch (conePosition) {
@@ -104,7 +114,6 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
             case LEFT: {
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq);
-
                 break;
 
             }
@@ -221,6 +230,8 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
 
 
     }
+
+    final double PIXELHOLDERDOOR_DEPOSIT_POS = 0.5;
     public void goTo0 () {
         double distance = 0;
         newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
@@ -231,5 +242,13 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         double distance = 37;
         newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
+    }
+
+    public void rotateDown(){
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+    }
+
+    public void rotateUp() {
+        robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
     }
 }

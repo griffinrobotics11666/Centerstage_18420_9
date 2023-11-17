@@ -83,6 +83,7 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
 
         if (!isStopRequested())
             conePosition = pipeline.getPropPosition();
+        webcam.closeCameraDevice();
         sleep(1000);
             switch (conePosition) {
 

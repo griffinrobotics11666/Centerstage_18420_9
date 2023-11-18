@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorBLUE;
+import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -18,13 +20,16 @@ import org.openftc.easyopencv.PipelineRecordingParameters;
 @TeleOp
 public class WebcamTest extends LinearOpMode
 {
+    private final ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
+    //private final ContoursPixelLocatorBLUE pipeline = new ContoursPixelLocatorBLUE(telemetry); //update this for new pipeline
     OpenCvWebcam webcam;
+
     @Override
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        webcam.setPipeline(new org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED(telemetry));
+        webcam.setPipeline(pipeline);
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -32,7 +37,7 @@ public class WebcamTest extends LinearOpMode
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -45,6 +50,7 @@ public class WebcamTest extends LinearOpMode
         });
 
         telemetry.addLine("Waiting for start");
+        telemetry.addData("Cone Position: ", pipeline.getPropPosition());
         telemetry.update();
 
 

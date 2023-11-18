@@ -55,14 +55,14 @@ public class ContoursPixelLocatorBLUE extends OpenCvPipeline {
     public Boolean toggleReturnedMat = true;
     public enum ConePosition {LEFT,CENTER,RIGHT}
     ConePosition coneposition = ConePosition.CENTER;
-    public Point submatBound1 = new Point(1919,414);
-    public Point submatBound2 = new Point(0,660);
+    public Point submatBound1 = new Point(639,479);
+    public Point submatBound2 = new Point(0,220);
 
     //upper and lower Scalar values for changing the range for the mask
     public Scalar lower1 = new Scalar(100,180,120);
     public Scalar upper1 = new Scalar(255,255,255);
-    public final int LEFT_BOUND = 640;
-    public final int RIGHT_BOUND = 1280;
+    public final int LEFT_BOUND = 640/3;
+    public final int RIGHT_BOUND = 1280/3;
 
     //for list size sorting:
     public int currentEsize;

@@ -17,10 +17,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.PipelineRecordingParameters;
 
-@TeleOp
-public class WebcamTest extends LinearOpMode
+@TeleOp (name="WebcamBLUE", group="TeleOp")
+public class WebcamTestBLUE extends LinearOpMode
 {
-    private final ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
+    private final ContoursPixelLocatorBLUE pipeline = new ContoursPixelLocatorBLUE(telemetry); //update this for new pipeline
     //private final ContoursPixelLocatorBLUE pipeline = new ContoursPixelLocatorBLUE(telemetry); //update this for new pipeline
     OpenCvWebcam webcam;
 

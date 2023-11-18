@@ -160,30 +160,31 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
 
         //check x location of the tallest obj
         //ignores left 5 pixels to split into 3 sections evenly
-        if (centers.get(biggestIsize).x < LEFT_BOUND) {
-            coneposition = ConePosition.LEFT;
-        }
-        else if (centers.get(biggestIsize).x >= LEFT_BOUND && centers.get(biggestIsize).x <= RIGHT_BOUND) {
-            coneposition = ConePosition.CENTER;
-        }
-        else if (centers.get(biggestIsize).x > RIGHT_BOUND) {
-            coneposition = ConePosition.RIGHT;
-        }
-        Imgproc.circle(contoursOnPlainImageMat,centers.get(biggestIsize),3,new Scalar(0,255,0),2);
-        Imgproc.boundingRect(contoursList.get(biggestIsize));
-        Imgproc.rectangle(contoursOnPlainImageMat,submatBound1, submatBound2, new Scalar(255,0,0), 2);
-        telemetry.addData("width of box",rectList.get(biggestIsize).width);
-        //At this point, we could try to estimate the distance of the box by a ratio of apparent size to expected.
-        //The bigger the box width, the smaller the distance.
-        //if we know a size of the box at a specific distance, if the box width doubles, then the distance halfs.
 
-        //this draws a box around the image to show you where the computer things the object is based on "center"
+        if(contoursList.size() != 0) {
+            if (centers.get(biggestIsize).x < LEFT_BOUND) {
+                coneposition = ConePosition.LEFT;
+            } else if (centers.get(biggestIsize).x >= LEFT_BOUND && centers.get(biggestIsize).x <= RIGHT_BOUND) {
+                coneposition = ConePosition.CENTER;
+            } else if (centers.get(biggestIsize).x > RIGHT_BOUND) {
+                coneposition = ConePosition.RIGHT;
+            }
+            Imgproc.circle(contoursOnPlainImageMat, centers.get(biggestIsize), 3, new Scalar(0, 255, 0), 2);
+            Imgproc.boundingRect(contoursList.get(biggestIsize));
+            Imgproc.rectangle(contoursOnPlainImageMat, submatBound1, submatBound2, new Scalar(255, 0, 0), 2);
+            telemetry.addData("width of box", rectList.get(biggestIsize).width);
+            //At this point, we could try to estimate the distance of the box by a ratio of apparent size to expected.
+            //The bigger the box width, the smaller the distance.
+            //if we know a size of the box at a specific distance, if the box width doubles, then the distance halfs.
 
-        //String centers = "Center 1: " + center1.x + ", " + center1.y + " Center 2: " + center2.x + ", " + center2.y;
+            //this draws a box around the image to show you where the computer things the object is based on "center"
 
-        telemetry.addData("center x location: ", centers.get(biggestIsize).x);
-        telemetry.addData("center y location: ", centers.get(biggestIsize).y);
-        telemetry.addData("getAnalysis result (center point): ", centers.get(biggestIsize));
+            //String centers = "Center 1: " + center1.x + ", " + center1.y + " Center 2: " + center2.x + ", " + center2.y;
+
+            telemetry.addData("center x location: ", centers.get(biggestIsize).x);
+            telemetry.addData("center y location: ", centers.get(biggestIsize).y);
+            telemetry.addData("getAnalysis result (center point): ", centers.get(biggestIsize));
+        }
         telemetry.addData("Cone Position: ", coneposition);
 
         telemetry.update();

@@ -49,7 +49,7 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.init(hardwareMap);
 
-        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(0, 3, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -87,8 +87,8 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         if (!isStopRequested())
             //conePosition = pipeline.getPropPosition();
         //webcam.closeCameraDevice();
-        sleep(1000);
-        conePosition = ContoursPixelLocatorRED.ConePosition.RIGHT;
+            sleep(1000);
+        //conePosition = ContoursPixelLocatorRED.ConePosition.CENTER;
 
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
@@ -98,7 +98,7 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                     goTo3();
                 })
                 .strafeLeft(12)
-                .lineToSplineHeading(new Pose2d(34, -31, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(34, -33, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     rotateDown();
                 })
@@ -106,13 +106,13 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(26, -1, Math.toRadians(-60)))
+                .lineToSplineHeading(new Pose2d(26, 3, Math.toRadians(-60)))
                 .lineToSplineHeading(new Pose2d(12,0,Math.toRadians(-60)))
                 .lineToSplineHeading(new Pose2d(18, -24, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     goTo3();
                 })
-                .lineToSplineHeading(new Pose2d(22, -32, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(22, -34, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     rotateDown();
                 })
@@ -120,12 +120,12 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(28, -1, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(28, 0, Math.toRadians(0)))
                 .lineToSplineHeading(new Pose2d(26, -20, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     goTo3();
                 })
-                .lineToSplineHeading(new Pose2d(26, -31, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(26, -33, Math.toRadians(-90)))
                 .addDisplacementMarker(() -> {
                     rotateDown();
                 })

@@ -1,14 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorBLUE;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -31,17 +34,21 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415) / 1.86;
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    static double ARM_COUNTS_PER_INCH = 80; //Figure out right number //114.75
 
     static final double HEADING_THRESHOLD = .5;
     static final double P_TURN_COEFF = 0.075;
     static final double P_DRIVE_COEFF = 0.05;
 
+    int newTarget = 0;
+
     @Override
     public void runOpMode()  {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        robot.init(hardwareMap);
 
-        Pose2d startPose = new Pose2d();
+        Pose2d startPose = new Pose2d(0,0,Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -59,17 +66,11 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
             }
         });
 
-        Trajectory traj1 = drive.trajectoryBuilder(startPose)
-            .lineToSplineHeading(new Pose2d(1, 0, Math.toRadians(0)))
-            .build();
-
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(0,24,Math.toRadians(90)))
-                .build();
-
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(3,0,Math.toRadians(180)))
-                .build();
+        robot.viperSlideLift.setDirection(DcMotor.Direction.REVERSE);
+        robot.viperSlideLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.viperSlideLift.setTargetPosition(0);
+        robot.viperSlideLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.viperSlideLift.setPower(1);
 
         while (opModeInInit()) {
             telemetry.addData("Realtime analysis", pipeline.getPropPosition());
@@ -85,28 +86,53 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(1000);
-            switch (conePosition) {
+        conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT;
+
+        TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(51,0,Math.toRadians(-90)))
+                .lineToConstantHeading(new Vector2d(51,85))
+                .build();
+        TrajectorySequence trajSeq_left2 = drive.trajectorySequenceBuilder(startPose)
+                .splineToSplineHeading(new Pose2d(22, -8, Math.toRadians(60)), Math.toRadians(60))
+                .build();
+        TrajectorySequence trajSeq_right2 = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d (26, 3, Math.toRadians(-60)))
+                .build();
+        TrajectorySequence trajSeq_center2 = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d (28, 0, Math.toRadians(0)))
+                .build();
+        /*
+        TrajectorySequence trajSeq_left2 = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(5,30,Math.toRadians(90)) )
+                .strafeRight(15)
+                .addDisplacementMarker(() ->{
+                   // goTo3();
+                })
+                .build();
+
+         */
+
+
+
+        switch (conePosition) {
 
 
                 case LEFT: {
                     if (!isStopRequested())
-                        drive.followTrajectory(traj1);
+                        drive.followTrajectorySequence(trajSeq_left);
                     break;
 
                 }
 
-
-
                 case CENTER: {
                     if (!isStopRequested())
-                        drive.followTrajectory(traj2);
-                   break;
+                        drive.followTrajectorySequence(trajSeq_center2);
+                    break;
                 }
-
 
                 case RIGHT: {
                     if (!isStopRequested())
-                        drive.followTrajectory(traj3);
+                        drive.followTrajectorySequence(trajSeq_right2);
                     break;
                 }
 
@@ -205,6 +231,12 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
 //            }
 //
 //
+    }
+
+    public void goTo3 () {
+        double distance = 25;
+        newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
+        robot.viperSlideLift.setTargetPosition(newTarget);
     }
 
 

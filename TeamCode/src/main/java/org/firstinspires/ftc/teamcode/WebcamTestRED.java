@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.opencv.core.Mat;
@@ -15,13 +19,16 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.PipelineRecordingParameters;
-
+@Config
 @TeleOp (name="WebcamRED", group="TeleOp")
 public class WebcamTestRED extends LinearOpMode
 {
     private final ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
+
     //private final ContoursPixelLocatorBLUE pipeline = new ContoursPixelLocatorBLUE(telemetry); //update this for new pipeline
     OpenCvWebcam webcam;
+    FtcDashboard dashboard;
+    TelemetryPacket packet = new TelemetryPacket();
 
     @Override
     public void runOpMode()
@@ -30,13 +37,14 @@ public class WebcamTestRED extends LinearOpMode
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(pipeline);
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
-
+        dashboard = FtcDashboard.getInstance();
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
                 webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(webcam, 40);
             }
 
             @Override
@@ -50,6 +58,8 @@ public class WebcamTestRED extends LinearOpMode
 
         telemetry.addLine("Waiting for start");
         telemetry.addData("Cone Position: ", pipeline.getPropPosition());
+
+
         telemetry.update();
 
 
@@ -57,6 +67,7 @@ public class WebcamTestRED extends LinearOpMode
 
         while (opModeIsActive())
         {
+
             telemetry.addData("Frame Count", webcam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
             telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
@@ -64,6 +75,7 @@ public class WebcamTestRED extends LinearOpMode
             telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
             telemetry.update();
+
 
             if(gamepad1.a)
             {

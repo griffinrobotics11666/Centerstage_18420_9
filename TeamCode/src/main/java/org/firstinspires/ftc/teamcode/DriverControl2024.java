@@ -42,6 +42,8 @@ public class DriverControl2024 extends OpMode {
     final double FIRE = .5;
     final double HANGCLOSEPOS = 0;
     final double HANGHANGINGPOS = 0.5;
+    final double SERVODESPOSITEPOS = 0.5;
+    final double SERVOSTOREPOS = 0;
 
     boolean lastMovement= false; boolean currentMovement= false;
     boolean downPosition= true;
@@ -194,6 +196,13 @@ public class DriverControl2024 extends OpMode {
 
                 }
             }
+        }
+        if (gamepad2.x) {
+            robot.viperServo1.setPosition(SERVODESPOSITEPOS);
+            robot.viperServo2.setPosition(SERVODESPOSITEPOS);
+        }else{
+            robot.viperServo1.setPosition(SERVOSTOREPOS);
+            robot.viperServo2.setPosition(SERVOSTOREPOS);
         }
 
         switch (liftState) {

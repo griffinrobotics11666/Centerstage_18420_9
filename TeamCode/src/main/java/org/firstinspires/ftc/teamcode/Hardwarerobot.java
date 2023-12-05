@@ -19,6 +19,10 @@ public class Hardwarerobot
     public DcMotor slideMotor = null;
     public DcMotor hangMotor = null;
 
+
+    public Servo viperServo1 = null;
+    public Servo viperServo2 = null;
+    public Servo pixelBox = null;
     public Servo pixelHolderRotator = null;
     public Servo pixelHolderDoor = null;
     public Servo intakeBox = null;
@@ -44,6 +48,9 @@ public class Hardwarerobot
         intake =  hwMap.get(DcMotor.class, "intake");
         hangMotor = hwMap.get(DcMotor.class,"hangMotor");
         slideMotor  = hwMap.get(DcMotor.class, "slideMotor");
+        viperServo1 = hwMap.get(Servo.class,"viperServo1");
+        viperServo2 = hwMap.get(Servo.class, "viperServo2");
+        pixelBox = hwMap.get(Servo.class, "pixelBox");
         pixelHolderRotator = hwMap.get(Servo.class,"pixelHolderRotator");
         pixelHolderDoor = hwMap.get(Servo.class,"pixelHolderDoor");
         intakeBox = hwMap.get(Servo.class,"intakeBox");
@@ -57,6 +64,10 @@ public class Hardwarerobot
         viperSlideLift.setDirection(DcMotor.Direction.FORWARD);
         intake.setDirection(DcMotor.Direction.FORWARD);
         hangMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        viperServo1.setDirection(Servo.Direction.FORWARD);
+        viperServo2.setDirection(Servo.Direction.REVERSE);
+        pixelBox.setDirection(Servo.Direction.FORWARD);
         pixelHolderRotator.setDirection(Servo.Direction.FORWARD);
         pixelHolderDoor.setDirection(Servo.Direction.REVERSE);
         intakeBox.setDirection(Servo.Direction.REVERSE);
@@ -100,6 +111,9 @@ public class Hardwarerobot
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hangMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        viperServo1.setPosition(0);
+        viperServo2.setPosition(0);
+        pixelBox.setPosition(0);
         pixelHolderRotator.setPosition(PIXELHOLDERROTATOR_STORE_POS);
         pixelHolderDoor.setPosition(1);
         intakeBox.setPosition(.5);

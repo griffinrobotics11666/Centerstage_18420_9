@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Pipelines;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -33,11 +37,17 @@ import java.util.ArrayList;
  * 11. Calculates a bounding box around the contours.
  * 12. Draws the bounding box and outputs data about where the center is.
  */
-
+@Config
 public class ContoursPixelLocatorRED extends OpenCvPipeline {
+    //TODO
+    //do all of the things for WebcamTestBLUE and ContoursPixelLocatorBLUE
 
     //necessary bits for making telemetry work in a pipeline!
     Telemetry telemetry;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    TelemetryPacket packet = new TelemetryPacket();
+
     public ContoursPixelLocatorRED(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
@@ -49,20 +59,31 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
     Mat contoursOnPlainImageMat = new Mat(); //copy of original image to vandalize with contours
     Mat narrowedThresholdMat = new Mat();
 
-
+    //config variable(s) for images
+    public static Point submatBound1 = new Point(639,479);
+    public static Point submatBound2 = new Point(0,220);
+    public static Point testPoint = new Point(0,0);
     //Boolean for team (Red = T, Blue = F)
     public Boolean teamColor = true;
     public Boolean toggleReturnedMat = true;
     public enum ConePosition {LEFT,CENTER,RIGHT}
     ConePosition coneposition = ConePosition.CENTER;
-    public Point submatBound1 = new Point(639,479);
-    public Point submatBound2 = new Point(0,220);
 
     //upper and lower Scalar values for changing the range for the mask
-    public Scalar lower1 = new Scalar(170,160,120);
-    public Scalar upper1 = new Scalar(255,255,255);
-    public final int LEFT_BOUND = 640/3;
-    public final int RIGHT_BOUND = 1280/3;
+    public static int lowerH = 170;
+    public static int lowerS = 160;
+    public static int lowerV = 120;
+
+    public static int upperH = 255;
+    public static int upperS = 255;
+    public static int upperV = 255;
+
+    //moved the variables to make them editable in FTC Dashboard.
+    //Upper and Lower Scalar values are in the process frame so that they are updated each frame rather than set once at the start of the code.
+
+
+    public static int LEFT_BOUND = 640/3;
+    public static int RIGHT_BOUND = 1280/3;
 
     //for list size sorting:
     public int currentEsize;
@@ -80,6 +101,8 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+        Scalar lower1 = new Scalar(lowerH,lowerS,lowerV);
+        Scalar upper1 = new Scalar(upperH,upperS,upperV);
         teamColor = true; //reinit teamColor default RED
         // Executed every time a new frame is dispatched
         //Array to hold the contours
@@ -87,6 +110,7 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
         ArrayList<Moments> momentsList = new ArrayList<>();
         ArrayList<Point> centers = new ArrayList<>();
         ArrayList<Rect> rectList = new ArrayList<>();
+
 
         //convert color space to limit what you are seeing
 
@@ -123,7 +147,6 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
 
         //counter for the number of closed contours
         telemetry.addData("Number of objects", contoursList.size());
-
 
         //Sometimes images have no contours!  The list is empty, so if you try to grab an object from it
         //It yells at you.  This makes sure the list isn't empty before you access it!
@@ -170,6 +193,7 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
                 coneposition = ConePosition.RIGHT;
             }
             Imgproc.circle(contoursOnPlainImageMat, centers.get(biggestIsize), 3, new Scalar(0, 255, 0), 2);
+
             Imgproc.boundingRect(contoursList.get(biggestIsize));
             Imgproc.rectangle(contoursOnPlainImageMat, submatBound1, submatBound2, new Scalar(255, 0, 0), 2);
             telemetry.addData("width of box", rectList.get(biggestIsize).width);
@@ -184,11 +208,18 @@ public class ContoursPixelLocatorRED extends OpenCvPipeline {
             telemetry.addData("center x location: ", centers.get(biggestIsize).x);
             telemetry.addData("center y location: ", centers.get(biggestIsize).y);
             telemetry.addData("getAnalysis result (center point): ", centers.get(biggestIsize));
+
         }
         telemetry.addData("Cone Position: ", coneposition);
-
+        packet.put("Cone Position", coneposition);
         telemetry.update();
+        dashboard.sendTelemetryPacket(packet);
 
+
+        Imgproc.line(contoursOnPlainImageMat,new Point(0,220),new Point(639,220),new Scalar(255,0,0), 2);
+        Imgproc.line(contoursOnPlainImageMat,new Point(0,479),new Point(639,479),new Scalar(255,0,0), 2);
+        Imgproc.line(contoursOnPlainImageMat,new Point(LEFT_BOUND,0),new Point(LEFT_BOUND,479),new Scalar(255,0,0), 2);
+        Imgproc.line(contoursOnPlainImageMat,new Point(RIGHT_BOUND,0),new Point(RIGHT_BOUND,479),new Scalar(255,0,0), 2);
         //this returns the image with the contours
         if (toggleReturnedMat) {
             return contoursOnPlainImageMat; // Return the image that will be displayed in the viewport

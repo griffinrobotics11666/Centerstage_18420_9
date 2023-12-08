@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+@Config
 @TeleOp(name="Driver control 2024", group="TeleOp")
 public class DriverControl2024 extends OpMode {
     private ElapsedTime runtime = new ElapsedTime(); //clock
@@ -20,6 +22,7 @@ public class DriverControl2024 extends OpMode {
     double intakeUpDelayTime = 800;
     double droneSafteyTimer = 90000;
     double hangSafteyTimer = 90000;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
     public enum LiftState {
         LIFT_UP,
         LIFT_LOWER
@@ -33,17 +36,19 @@ public class DriverControl2024 extends OpMode {
     }
     SlideState slideState = SlideState.SLIDE_READY;
 
-    final double PIXELHOLDERDOOR_STORE_POS = 0.9;
-    final double PIXELHOLDERDOOR_DEPOSIT_POS = 0.5;
-    final double INTAKEBOXUP = .68;
-    final double INTAKEBOXINIT = .5;
-    final double INTAKEBOXDOWN = 0.03;
-    final double CLOSEPOSITION = 0;
-    final double FIRE = .5;
-    final double HANGCLOSEPOS = 0;
-    final double HANGHANGINGPOS = 0.5;
-    final double SERVODESPOSITEPOS = 0.5;
-    final double SERVOSTOREPOS = 0;
+    public static double PIXELHOLDERDOOR_STORE_POS = 0.9;
+    public static double PIXELHOLDERDOOR_DEPOSIT_POS = 0.5;
+    public static double PIXELDOOR2_STORE_POS = 0.9;
+    public static double PIXELDOOR2_DEPOSIT_POS = 0.5;
+    public static double INTAKEBOXUP = .68;
+    public static double INTAKEBOXINIT = .5;
+    public static double INTAKEBOXDOWN = 0.03;
+    public static double CLOSEPOSITION = 0;
+    public static double FIRE = .5;
+    public static double HANGCLOSEPOS = 0;
+    public static double HANGHANGINGPOS = 0.5;
+    public static double SERVODESPOSITEPOS = 0.5;
+    public static double SERVOSTOREPOS = 0;
 
     boolean lastMovement= false; boolean currentMovement= false;
     boolean downPosition= true;
@@ -56,6 +61,9 @@ public class DriverControl2024 extends OpMode {
 
     boolean lastMovement4 = false; boolean currentMovement4 = false;
     boolean downPosition4 = true;
+
+    boolean lastMovement5 = false; boolean currentMovement5 = false;
+    boolean downPosition5 = true;
 
     Hardwarerobot robot = new Hardwarerobot();
     HardwareMap hwMap = null;
@@ -131,6 +139,7 @@ public class DriverControl2024 extends OpMode {
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFrontPower, rightFrontPower);
+        telemetry.addData("Status", "BRENNAN AND EGG MAN YOU BETTER NOT GET ANY PENALTIES OR ELSE . . .");
         telemetry.update();
 
         if (Math.abs(gamepad2.left_trigger - gamepad2.right_trigger) > .1) {
@@ -184,7 +193,7 @@ public class DriverControl2024 extends OpMode {
             }
         }
 
-        lastMovement4 = currentMovement4;
+        /*lastMovement4 = currentMovement4;
         currentMovement4 = gamepad1.b;
 
         if (hangSaftey.milliseconds() >= hangSafteyTimer) {
@@ -197,6 +206,22 @@ public class DriverControl2024 extends OpMode {
                 }
             }
         }
+
+         */
+
+        lastMovement5 = currentMovement5;
+        currentMovement5 = gamepad2.b;
+
+        if (currentMovement5 && !lastMovement5) {
+            downPosition5 = !downPosition5;
+            if(downPosition5) {
+                robot.pixelDoor2.setPosition(PIXELDOOR2_DEPOSIT_POS);
+            }
+            else{
+                robot.pixelDoor2.setPosition(PIXELDOOR2_STORE_POS);
+            }
+        }
+
         if (gamepad2.x) {
             robot.viperServo1.setPosition(SERVODESPOSITEPOS);
             robot.viperServo2.setPosition(SERVODESPOSITEPOS);
@@ -209,6 +234,7 @@ public class DriverControl2024 extends OpMode {
             case LIFT_UP:
                 if (gamepad2.dpad_down){
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
+                    robot.pixelDoor2.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
                     robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
                     goTo0();
                     liftState = LiftState.LIFT_LOWER;
@@ -219,6 +245,7 @@ public class DriverControl2024 extends OpMode {
             case LIFT_LOWER:
                 if(gamepad2.dpad_up){
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_STORE_POS);
+                    robot.pixelDoor2.setPosition(PIXELDOOR2_STORE_POS);
                     goTo3();
                     robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
                     liftState = LiftState.LIFT_UP;

@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -7,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.util.Encoder;
-
+@Config
 public class Hardwarerobot
 {
     public DcMotor  leftFrontDrive   = null;
@@ -25,12 +26,13 @@ public class Hardwarerobot
     public Servo pixelBox = null;
     public Servo pixelHolderRotator = null;
     public Servo pixelHolderDoor = null;
+    public Servo pixelDoor2 = null;
     public Servo intakeBox = null;
     public Servo droneLauncher = null;
 
 
-    public final double PIXELHOLDERROTATOR_DEPOSIT_POS = 1;
-    public final double PIXELHOLDERROTATOR_STORE_POS = .1;
+    public static double PIXELHOLDERROTATOR_DEPOSIT_POS = .6;
+    public static double PIXELHOLDERROTATOR_STORE_POS = .1;
 
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -53,6 +55,7 @@ public class Hardwarerobot
         pixelBox = hwMap.get(Servo.class, "pixelBox");
         pixelHolderRotator = hwMap.get(Servo.class,"pixelHolderRotator");
         pixelHolderDoor = hwMap.get(Servo.class,"pixelHolderDoor");
+        pixelDoor2 = hwMap.get(Servo.class, "pixelDoor2");
         intakeBox = hwMap.get(Servo.class,"intakeBox");
         droneLauncher = hwMap.get(Servo.class,"droneLauncher");
 
@@ -116,6 +119,7 @@ public class Hardwarerobot
         pixelBox.setPosition(0);
         pixelHolderRotator.setPosition(PIXELHOLDERROTATOR_STORE_POS);
         pixelHolderDoor.setPosition(1);
+        pixelDoor2.setPosition(1);
         intakeBox.setPosition(.5);
         droneLauncher.setPosition(0);
     }

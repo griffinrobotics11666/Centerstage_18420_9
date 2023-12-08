@@ -21,6 +21,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -43,7 +45,8 @@ public class AprilTagDemo extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-
+    FtcDashboard dashboard;
+    TelemetryPacket packet = new TelemetryPacket();
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -73,12 +76,15 @@ public class AprilTagDemo extends LinearOpMode
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
+
+        dashboard = FtcDashboard.getInstance();
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
                 camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(camera, 40);
             }
 
             @Override
@@ -94,6 +100,8 @@ public class AprilTagDemo extends LinearOpMode
 
         while (opModeIsActive())
         {
+            packet = new TelemetryPacket();
+
             // Calling getDetectionsUpdate() will only return an object if there was a new frame
             // processed since the last time we called it. Otherwise, it will return null. This
             // enables us to only run logic when there has been a new frame, as opposed to the
@@ -134,17 +142,17 @@ public class AprilTagDemo extends LinearOpMode
                     for(AprilTagDetection detection : detections)
                     {
                         Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+                        packet.addLine(String.format("\nDetected tag ID=%d", detection.id));
+                        packet.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+                        packet.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+                        packet.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+                        packet.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
+                        packet.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
+                        packet.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
 
-                        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-                        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-                        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-                        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-                        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
-                        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
-                        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
                     }
                 }
-
+                dashboard.sendTelemetryPacket(packet);
                 telemetry.update();
             }
 

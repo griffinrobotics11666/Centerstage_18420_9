@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorBLUE;
-import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -18,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(group = "Auto Blue")
-public class RoadRunner_Auto_Blue extends LinearOpMode {
+public class RoadRunner_Auto_Red_2 extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();
@@ -90,47 +87,37 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(27,0, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(27,7,Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(30,2, Math.toRadians(180)))
                 .addDisplacementMarker(() ->{
                     robot.auto.setPosition(robot.AUTO_OPEN_POS);
                 })
-                .lineToSplineHeading(new Pose2d(27,0, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50,0, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(30,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(30, -45, Math.toRadians(270)))
                 .addDisplacementMarker(() ->{
                     deposit();
                 })
-                .lineToSplineHeading(new Pose2d(30,90, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d (40, -5, Math.toRadians(180)))
-                .addDisplacementMarker(() ->{
+                .lineToSplineHeading(new Pose2d(32,2, Math.toRadians(0)))
+                .addDisplacementMarker(() -> {
                     robot.auto.setPosition(robot.AUTO_OPEN_POS);
                 })
-                .lineToSplineHeading(new Pose2d(50,-6, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(36,80, Math.toRadians(90)))
-                .addDisplacementMarker(() ->{
+                .lineToSplineHeading(new Pose2d(25, -45, Math.toRadians(270)))
+                .addDisplacementMarker(() -> {
                     deposit();
                 })
-                .lineToSplineHeading(new Pose2d(36,90, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d (26, -3, Math.toRadians(0)))
-                .addDisplacementMarker(() ->{
+                .lineToSplineHeading(new Pose2d(40,-8, Math.toRadians(270)))
+                .addDisplacementMarker(() -> {
                     robot.auto.setPosition(robot.AUTO_OPEN_POS);
                 })
-                .lineToSplineHeading(new Pose2d(50,0, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(43, 80, Math.toRadians(90)))
-                .addDisplacementMarker(() ->{
+                .lineToSplineHeading(new Pose2d(15, -45, Math.toRadians(270)))
+                .addDisplacementMarker(() -> {
                     deposit();
                 })
-                .lineToSplineHeading(new Pose2d(43,90, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
 
 

@@ -21,7 +21,7 @@ public class DriverControl2024 extends OpMode {
     double intakeDownDelayTime = 800;
     double intakeUpDelayTime = 800;
     double droneSafteyTimer = 90000;
-    double hangSafteyTimer = 90000;
+    double hangSafteyTimer = 0;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     public enum LiftState {
         LIFT_UP,
@@ -47,8 +47,8 @@ public class DriverControl2024 extends OpMode {
     public static double FIRE = .5;
     public static double HANGCLOSEPOS = 0;
     public static double HANGHANGINGPOS = 0.5;
-    public static double SERVODESPOSITEPOS = 0.5;
-    public static double SERVOSTOREPOS = 0;
+    //public static double SERVODESPOSITEPOS = 0.5;
+    //public static double SERVOSTOREPOS = 0;
 
     boolean lastMovement= false; boolean currentMovement= false;
     boolean downPosition= true;
@@ -61,9 +61,6 @@ public class DriverControl2024 extends OpMode {
 
     boolean lastMovement4 = false; boolean currentMovement4 = false;
     boolean downPosition4 = true;
-
-    boolean lastMovement5 = false; boolean currentMovement5 = false;
-    boolean downPosition5 = true;
 
     Hardwarerobot robot = new Hardwarerobot();
     HardwareMap hwMap = null;
@@ -92,11 +89,6 @@ public class DriverControl2024 extends OpMode {
         robot.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.slideMotor.setPower(.7);
 
-        robot.hangMotor.setDirection(DcMotor.Direction.REVERSE);
-        robot.hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hangMotor.setTargetPosition(0);
-        robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hangMotor.setPower(1);
     }
 
     @Override
@@ -193,8 +185,8 @@ public class DriverControl2024 extends OpMode {
             }
         }
 
-        /*lastMovement4 = currentMovement4;
-        currentMovement4 = gamepad1.b;
+        lastMovement4 = currentMovement4;
+        currentMovement4 = gamepad2.dpad_right;
 
         if (hangSaftey.milliseconds() >= hangSafteyTimer) {
             if (currentMovement4 && !lastMovement4) {
@@ -207,21 +199,10 @@ public class DriverControl2024 extends OpMode {
             }
         }
 
-         */
 
-        lastMovement5 = currentMovement5;
-        currentMovement5 = gamepad2.b;
 
-        if (currentMovement5 && !lastMovement5) {
-            downPosition5 = !downPosition5;
-            if(downPosition5) {
-                robot.pixelDoor2.setPosition(PIXELDOOR2_DEPOSIT_POS);
-            }
-            else{
-                robot.pixelDoor2.setPosition(PIXELDOOR2_STORE_POS);
-            }
-        }
 
+/*
         if (gamepad2.x) {
             robot.viperServo1.setPosition(SERVODESPOSITEPOS);
             robot.viperServo2.setPosition(SERVODESPOSITEPOS);
@@ -230,11 +211,16 @@ public class DriverControl2024 extends OpMode {
             robot.viperServo2.setPosition(SERVOSTOREPOS);
         }
 
+ */
+
+        if (gamepad2.dpad_up){
+            goTo3();
+        }
+
         switch (liftState) {
             case LIFT_UP:
                 if (gamepad2.dpad_down){
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
-                    robot.pixelDoor2.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
                     robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
                     goTo0();
                     liftState = LiftState.LIFT_LOWER;
@@ -245,7 +231,6 @@ public class DriverControl2024 extends OpMode {
             case LIFT_LOWER:
                 if(gamepad2.dpad_up){
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_STORE_POS);
-                    robot.pixelDoor2.setPosition(PIXELDOOR2_STORE_POS);
                     goTo3();
                     robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
                     liftState = LiftState.LIFT_UP;
@@ -253,6 +238,7 @@ public class DriverControl2024 extends OpMode {
                 }
                 break;
         }
+
 
         switch (slideState) {
             case SLIDE_READY:
@@ -293,18 +279,8 @@ public class DriverControl2024 extends OpMode {
         robot.viperSlideLift.setTargetPosition(newTarget);
 
     }
-    public void goTo1(){
-        double distance = 16;
-        newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
-        robot.viperSlideLift.setTargetPosition(newTarget);
-    }
-    public void goTo2(){
-        double distance = 23;
-        newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
-        robot.viperSlideLift.setTargetPosition(newTarget);
-    }
     public void goTo3(){
-        double distance = 37;
+        double distance = 15;
         newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
     }
@@ -318,10 +294,10 @@ public class DriverControl2024 extends OpMode {
         newTarget = (int) (distance * SLIDE_COUNTS_PER_INCH);
         robot.slideMotor.setTargetPosition(newTarget);
     }
-    public void hang(){
-        double distance = 10;
+    public void hang() {
+        double distance = 26;
         newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
-        robot.hangMotor.setTargetPosition(newTarget);
+        robot.viperSlideLift.setTargetPosition(newTarget);
     }
 
     @Override

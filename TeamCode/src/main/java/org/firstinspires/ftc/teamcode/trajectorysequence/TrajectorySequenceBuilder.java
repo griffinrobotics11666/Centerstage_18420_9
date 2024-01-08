@@ -65,6 +65,8 @@ public class TrajectorySequenceBuilder {
     private double lastDurationTraj;
     private double lastDisplacementTraj;
 
+    public ArrayList<String> logs = new ArrayList<>();
+
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             Double startTangent,
@@ -501,6 +503,8 @@ public class TrajectorySequenceBuilder {
                 temporalMarkers, displacementMarkers, spatialMarkers
         );
 
+        logs.add("We have " + globalMarkers.size() + " global markers.");
+
         return new TrajectorySequence(projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments));
     }
 
@@ -585,6 +589,7 @@ public class TrajectorySequenceBuilder {
                 
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(thisSegment.getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
+                logs.add("WaitSegment with " + newMarkers.size() + " markers");
 
                 newSegment = new WaitSegment(thisSegment.getStartPose(), thisSegment.getDuration(), newMarkers);
             } else if (segment instanceof TurnSegment) {
@@ -592,6 +597,7 @@ public class TrajectorySequenceBuilder {
                 
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(thisSegment.getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
+                logs.add("TurnSegment with " + newMarkers.size() + " markers");
 
                 newSegment = new TurnSegment(thisSegment.getStartPose(), thisSegment.getTotalRotation(), thisSegment.getMotionProfile(), newMarkers);
             } else if (segment instanceof TrajectorySegment) {
@@ -599,9 +605,10 @@ public class TrajectorySequenceBuilder {
 
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(thisSegment.getTrajectory().getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
+                logs.add("TrajectorySegment with " + newMarkers.size() + " markers");
 
                 newSegment = new TrajectorySegment(new Trajectory(thisSegment.getTrajectory().getPath(), thisSegment.getTrajectory().getProfile(), newMarkers));
-            }
+            } else logs.add("Hmm...");
 
             sequenceSegments.set(segmentIndex, newSegment);
         }

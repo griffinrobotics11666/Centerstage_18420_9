@@ -144,7 +144,7 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         switch (conePosition) {
 
 
-            case LEFT: {
+            case LEFT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_left);
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
@@ -156,10 +156,10 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
 
                 break;
 
-            }
 
 
-            case CENTER: {
+
+            case CENTER:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_center);
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
@@ -169,10 +169,10 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                     goTo0();
                     sleep(5000);
                 break;
-            }
 
 
-            case RIGHT: {
+
+            case RIGHT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_right);
                     robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
@@ -182,7 +182,7 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
                     goTo0();
                     sleep(5000);
                 break;
-            }
+
 
 
         }

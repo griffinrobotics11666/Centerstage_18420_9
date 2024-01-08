@@ -126,7 +126,7 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
                 })
                 .lineToSplineHeading(new Pose2d(50,0, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(43, 80, Math.toRadians(90)))
-                .addDisplacementMarker(() ->{
+                .addDisplacementMarker(() -> {
                     deposit();
                 })
                 .lineToSplineHeading(new Pose2d(43,90, Math.toRadians(90)))
@@ -137,24 +137,24 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
         switch (conePosition) {
 
 
-                case LEFT: {
+                case LEFT:
                     if (!isStopRequested())
                         drive.followTrajectorySequence(trajSeq_left);
                     break;
 
-                }
 
-                case CENTER: {
+
+                case CENTER:
                     if (!isStopRequested())
                         drive.followTrajectorySequence(trajSeq_center);
                     break;
-                }
 
-                case RIGHT: {
+
+                case RIGHT:
                     if (!isStopRequested())
                         drive.followTrajectorySequence(trajSeq_right);
                     break;
-                }
+
 
             }
 

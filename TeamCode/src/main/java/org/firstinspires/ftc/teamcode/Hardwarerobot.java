@@ -30,11 +30,11 @@ public class Hardwarerobot
     public Servo auto = null;
 
 
-    public static double PIXELHOLDERROTATOR_STORE_POS = 0;
-    public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0.65;
+    public static double PIXELHOLDERROTATOR_STORE_POS = 0.75; //.65
+    public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0;
 
-    public static double AUTO_CLOSED_POS = 0;
-    public static double AUTO_OPEN_POS = .5;
+    public static double AUTO_CLOSED_POS = 0.5;
+    public static double AUTO_OPEN_POS = 0;
 
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -71,7 +71,7 @@ public class Hardwarerobot
         viperServo1.setDirection(Servo.Direction.FORWARD);
         viperServo2.setDirection(Servo.Direction.REVERSE);
         pixelBox.setDirection(Servo.Direction.FORWARD);
-        pixelHolderRotator.setDirection(Servo.Direction.FORWARD);
+        pixelHolderRotator.setDirection(Servo.Direction.REVERSE);
         pixelHolderDoor.setDirection(Servo.Direction.REVERSE);
         intakeBox.setDirection(Servo.Direction.REVERSE);
         droneLauncher.setDirection(Servo.Direction.FORWARD);
@@ -114,10 +114,10 @@ public class Hardwarerobot
         viperServo1.setPosition(0);
         viperServo2.setPosition(0);
         pixelBox.setPosition(0);
-        pixelHolderRotator.setPosition(PIXELHOLDERROTATOR_STORE_POS);
+        pixelHolderRotator.setPosition(0.65);
         pixelHolderDoor.setPosition(1);
         intakeBox.setPosition(.5);
         droneLauncher.setPosition(0);
-        auto.setPosition(0);
+        auto.setPosition(AUTO_CLOSED_POS);
     }
 }

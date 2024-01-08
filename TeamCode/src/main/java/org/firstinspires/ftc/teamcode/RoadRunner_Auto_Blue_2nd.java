@@ -123,30 +123,28 @@ public class RoadRunner_Auto_Blue_2nd extends LinearOpMode {
         switch (conePosition) {
 
 
-                case LEFT: {
+                case LEFT:
                     if (!isStopRequested())
                         drive.followTrajectory(traj_left);
-                        //robot.auto.setPosition(robot.AUTO_OPEN_POS);
                         robot.auto.setPosition(.5);
                         drive.followTrajectory(traj_left_2);
-                        //deposit();
                         robot.pixelHolderRotator.setPosition(.6);
                         drive.followTrajectory(traj_left_3);
                     break;
 
-                }
 
-                case CENTER: {
+
+                case CENTER:
                     if (!isStopRequested())
                         //drive.followTrajectorySequence(trajSeq_center);
                     break;
-                }
 
-                case RIGHT: {
+
+                case RIGHT:
                     if (!isStopRequested())
                         //drive.followTrajectorySequence(trajSeq_right);
                     break;
-                }
+
 
             }
 

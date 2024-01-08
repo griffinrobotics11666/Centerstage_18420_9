@@ -62,6 +62,9 @@ public class DriverControl2024 extends OpMode {
     boolean lastMovement4 = false; boolean currentMovement4 = false;
     boolean downPosition4 = true;
 
+    boolean lastMovement5 = false; boolean currentMovement5 = false;
+    boolean downPosition5 = true;
+
     Hardwarerobot robot = new Hardwarerobot();
     HardwareMap hwMap = null;
     double slowfactor = 0.5;
@@ -160,7 +163,7 @@ public class DriverControl2024 extends OpMode {
                 robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
             }
         }
-
+/*
         lastMovement2 = currentMovement2;
         currentMovement2 = gamepad2.b;
 
@@ -172,6 +175,8 @@ public class DriverControl2024 extends OpMode {
                 robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_STORE_POS);
             }
         }
+
+ */
 
         lastMovement3 = currentMovement3;
         currentMovement3 = gamepad2.a;
@@ -198,6 +203,20 @@ public class DriverControl2024 extends OpMode {
                 }
             }
         }
+
+        lastMovement5 = currentMovement5;
+        currentMovement5 = gamepad2.b;
+
+        if (currentMovement5 && !lastMovement5) {
+            downPosition5 = !downPosition5;
+            if (downPosition5) {
+                robot.auto.setPosition(robot.AUTO_CLOSED_POS);
+            } else {
+                robot.auto.setPosition(robot.AUTO_OPEN_POS);
+            }
+        }
+        telemetry.addData("position",robot.auto.getPosition());
+        telemetry.update();
 
 
 

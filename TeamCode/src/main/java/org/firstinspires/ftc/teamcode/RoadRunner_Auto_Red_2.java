@@ -55,7 +55,7 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT); //change the image size to 1920 x 1080
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT); //change the image size to 1920 x 1080
             }
 
             @Override
@@ -83,14 +83,17 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(1000);
-        conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
+        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(30,2, Math.toRadians(180)))
                 .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(30, -45, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(30, -40, Math.toRadians(270)))
+                .waitSeconds(.5)
+                .forward(5)
+                .addDisplacementMarker( this::retract)
                 .back(5)
                 .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
@@ -98,7 +101,9 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(40,-2, Math.toRadians(180)))
                 .addDisplacementMarker(40, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(25, -45, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(25, -40, Math.toRadians(270)))
+                .waitSeconds(.5)
+                .forward(5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
                 .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
@@ -106,9 +111,12 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(38,2, Math.toRadians(180)))
                 .strafeLeft(20)
-                .addDisplacementMarker( 60, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker( 58, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .waitSeconds(.5)
                 .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(17, -45, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(17, -40, Math.toRadians(270)))
+                .waitSeconds(.25)
+                .forward(5)
                 .addDisplacementMarker(this::retract)
                 .back(5)
                 .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))

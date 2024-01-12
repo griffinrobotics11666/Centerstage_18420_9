@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Pipelines;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
  * 11. Calculates a bounding box around the contours.
  * 12. Draws the bounding box and outputs data about where the center is.
  */
-
+@Config
 public class ContoursPixelLocatorBLUE extends OpenCvPipeline {
     //TODO
     //do all of the things for WebcamTestBLUE and ContoursPixelLocatorBLUE
@@ -69,11 +70,11 @@ public class ContoursPixelLocatorBLUE extends OpenCvPipeline {
     ConePosition coneposition = ConePosition.CENTER;
 
     //upper and lower Scalar values for changing the range for the mask
-    public static int lowerH = 170;
+    public static int lowerH = 110; //TODO NEED TO CHANGE THIS
     public static int lowerS = 160;
     public static int lowerV = 120;
 
-    public static int upperH = 255;
+    public static int upperH = 140;
     public static int upperS = 255;
     public static int upperV = 255;
 

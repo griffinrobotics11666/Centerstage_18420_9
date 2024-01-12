@@ -97,6 +97,7 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
                 .back(5)
                 .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
+
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(40,-2, Math.toRadians(180)))
                 .addDisplacementMarker(40, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
@@ -108,6 +109,7 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
                 .back(5)
                 .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
                 .build();
+
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(38,2, Math.toRadians(180)))
                 .strafeLeft(20)

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(group = "Auto Blue")
-public class RoadRunner_Auto_Blue_2nd extends LinearOpMode {
+public class RoadRunner_Auto_Blue_2 extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();
@@ -56,7 +55,7 @@ public class RoadRunner_Auto_Blue_2nd extends LinearOpMode {
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT); //change the image size to 1920 x 1080
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT); //change the image size to 1920 x 1080
             }
 
             @Override
@@ -84,65 +83,58 @@ public class RoadRunner_Auto_Blue_2nd extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(1000);
-        conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT;
+        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
-        Trajectory traj_left = drive.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
+        TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(27,5,Math.toRadians(90)))
-                .build();
-        Trajectory traj_left_2 = drive.trajectoryBuilder(traj_left.end())
-                .lineToSplineHeading(new Pose2d(22, 40, Math.toRadians(90)))
-                .build();
-        Trajectory traj_left_3 = drive.trajectoryBuilder(traj_left_2.end())
+                .addDisplacementMarker(27, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(20, 45, Math.toRadians(90)))
+                .addDisplacementMarker(this::retract)
+                .back(5)
                 .lineToSplineHeading(new Pose2d(50, 35, Math.toRadians(90)))
                 .build();
-/*
+
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(28,0,Math.toRadians(90)))
-                .addDisplacementMarker(() ->{
-                    robot.auto.setPosition(robot.AUTO_OPEN_POS);
-                })
-                .lineToSplineHeading(new Pose2d(30,40, Math.toRadians(90)))
-                .addDisplacementMarker(() ->{
-                    deposit();
-                })
+                .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(25,45, Math.toRadians(90)))
+                .addDisplacementMarker(this::retract)
+                .back(5)
                 .lineToSplineHeading(new Pose2d(50,35, Math.toRadians(90)))
                 .build();
+
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(28,-5,Math.toRadians(0)))
-                .addTemporalMarker(4, () -> {
-                    robot.auto.setPosition(robot.AUTO_OPEN_POS);
-                })
-                .lineToSplineHeading(new Pose2d(33, 40, Math.toRadians(90)))
-                //.lineToSplineHeading(new Pose2d(50, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(28,-3,Math.toRadians(0)))
+                .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(31, 45, Math.toRadians(90)))
+                .addDisplacementMarker(this::retract)
+                .back(5)
+                .lineToSplineHeading(new Pose2d(50, 35, Math.toRadians(90)))
                 .build();
-
-     */
-
 
         switch (conePosition) {
 
 
                 case LEFT:
                     if (!isStopRequested())
-                        drive.followTrajectory(traj_left);
-                        robot.auto.setPosition(.5);
-                        drive.followTrajectory(traj_left_2);
-                        robot.pixelHolderRotator.setPosition(.6);
-                        drive.followTrajectory(traj_left_3);
+                        drive.followTrajectorySequence(trajSeq_left);
                     break;
 
 
 
                 case CENTER:
                     if (!isStopRequested())
-                        //drive.followTrajectorySequence(trajSeq_center);
+                        drive.followTrajectorySequence(trajSeq_center);
                     break;
 
 
                 case RIGHT:
                     if (!isStopRequested())
-                        //drive.followTrajectorySequence(trajSeq_right);
+                        drive.followTrajectorySequence(trajSeq_right);
                     break;
 
 

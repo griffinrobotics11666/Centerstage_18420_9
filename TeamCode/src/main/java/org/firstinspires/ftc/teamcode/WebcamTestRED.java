@@ -58,8 +58,6 @@ public class WebcamTestRED extends LinearOpMode
 
         telemetry.addLine("Waiting for start");
         telemetry.addData("Cone Position: ", pipeline.getPropPosition());
-
-
         telemetry.update();
 
 
@@ -67,7 +65,6 @@ public class WebcamTestRED extends LinearOpMode
 
         while (opModeIsActive())
         {
-
             telemetry.addData("Frame Count", webcam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
             telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
@@ -75,7 +72,6 @@ public class WebcamTestRED extends LinearOpMode
             telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
             telemetry.update();
-
 
             if(gamepad1.a)
             {

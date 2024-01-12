@@ -215,22 +215,9 @@ public class DriverControl2024 extends OpMode {
                 robot.auto.setPosition(robot.AUTO_OPEN_POS);
             }
         }
-        telemetry.addData("position",robot.auto.getPosition());
+        telemetry.addData("position",robot.pixelHolderRotator.getPosition());
         telemetry.update();
 
-
-
-
-/*
-        if (gamepad2.x) {
-            robot.viperServo1.setPosition(SERVODESPOSITEPOS);
-            robot.viperServo2.setPosition(SERVODESPOSITEPOS);
-        }else{
-            robot.viperServo1.setPosition(SERVOSTOREPOS);
-            robot.viperServo2.setPosition(SERVOSTOREPOS);
-        }
-
- */
 
         if (gamepad2.dpad_up){
             goTo3();

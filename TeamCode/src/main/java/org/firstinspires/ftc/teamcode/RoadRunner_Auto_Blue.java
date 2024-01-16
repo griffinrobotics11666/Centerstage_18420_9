@@ -86,7 +86,7 @@ public class RoadRunner_Auto_Blue extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(1000);
-        conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
+        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)

@@ -30,7 +30,7 @@ public class Hardwarerobot
     public Servo auto = null;
 
 
-    public static double PIXELHOLDERROTATOR_STORE_POS = 0.75; //.65
+    public static double PIXELHOLDERROTATOR_STORE_POS = 0.9; //.75
     public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0;
 
     public static double AUTO_CLOSED_POS = 0.5;

@@ -70,13 +70,13 @@ public class ContoursPixelLocatorBLUE extends OpenCvPipeline {
     ConePosition coneposition = ConePosition.CENTER;
 
     //upper and lower Scalar values for changing the range for the mask
-    public static int lowerH = 110; //TODO NEED TO CHANGE THIS
-    public static int lowerS = 160;
-    public static int lowerV = 120;
+    public static int lowerH = 80; //TODO NEED TO CHANGE THIS
+    public static int lowerS = 180;
+    public static int lowerV = 80;
 
-    public static int upperH = 140;
+    public static int upperH = 130;
     public static int upperS = 255;
-    public static int upperV = 255;
+    public static int upperV = 220;
 
     //moved the variables to make them editable in FTC Dashboard.
     //Upper and Lower Scalar values are in the process frame so that they are updated each frame rather than set once at the start of the code.

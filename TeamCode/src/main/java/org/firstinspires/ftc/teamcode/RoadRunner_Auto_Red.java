@@ -49,13 +49,13 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.init(hardwareMap);
 
-        Pose2d startPose = new Pose2d(0, 3, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-//        webcam.setPipeline(pipeline);
-//        webcam.setMillisecondsPermissionTimeout(2500);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam.setPipeline(pipeline);
+        webcam.setMillisecondsPermissionTimeout(2500);
 //        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
 //            @Override
 //            public void onOpened() {
@@ -88,48 +88,29 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
             //conePosition = pipeline.getPropPosition();
         //webcam.closeCameraDevice();
             sleep(1000);
-        //conePosition = ContoursPixelLocatorRED.ConePosition.CENTER;
+        conePosition = ContoursPixelLocatorRED.ConePosition.LEFT;
+        robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
-                .splineToSplineHeading(new Pose2d(22, 8, Math.toRadians(60)), Math.toRadians(60))
-                .lineToSplineHeading(new Pose2d(22, -24, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    goTo3();
-                })
-                .strafeLeft(12)
-                .lineToSplineHeading(new Pose2d(34, -33, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    rotateDown();
-                })
-
-                .build();
-
-        TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(26, 3, Math.toRadians(-60)))
-                .lineToSplineHeading(new Pose2d(12,0,Math.toRadians(-60)))
-                .lineToSplineHeading(new Pose2d(18, -24, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    goTo3();
-                })
-                .lineToSplineHeading(new Pose2d(22, -34, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    rotateDown();
-                })
-
+                .lineToSplineHeading(new Pose2d(30, 2, Math.toRadians(180)))
+                .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .lineToSplineHeading(new Pose2d(50, 0, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(45, -70, Math.toRadians(270)))
+                .addDisplacementMarker(() -> robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS))
+                .lineToSplineHeading(new Pose2d(28, -70, Math.toRadians(270)))
+                .waitSeconds(1)
+                .lineToSplineHeading(new Pose2d(28, -88, Math.toRadians(270)))
+                .addDisplacementMarker(this::retract)
+                .lineToSplineHeading(new Pose2d(30, -79, Math.toRadians(270)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(28, 0, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(26, -20, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    goTo3();
-                })
-                .lineToSplineHeading(new Pose2d(26, -33, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    rotateDown();
-                })
+                .lineToSplineHeading(new Pose2d(25, 2, Math.toRadians(90)))
+                .build();
 
+        TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(25, -2, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence park_center = drive.trajectorySequenceBuilder(trajSeq_center.end())
@@ -147,12 +128,6 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
             case LEFT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_left);
-                    robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
-                    sleep(2000);
-                    drive.followTrajectorySequence(park_left);
-                    rotateUp();
-                    goTo0();
-                    sleep(5000);
 
                 break;
 
@@ -162,11 +137,10 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
             case CENTER:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_center);
-                    robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
+
                     sleep(2000);
                     drive.followTrajectorySequence(park_center);
-                    rotateUp();
-                    goTo0();
+
                     sleep(5000);
                 break;
 
@@ -175,11 +149,10 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
             case RIGHT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_right);
-                    robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
+
                     sleep(2000);
                     drive.followTrajectorySequence(park_right);
-                    rotateUp();
-                    goTo0();
+
                     sleep(5000);
                 break;
 
@@ -285,24 +258,12 @@ public class RoadRunner_Auto_Red extends LinearOpMode {
 
     }
 
-    final double PIXELHOLDERDOOR_DEPOSIT_POS = 0.5;
-    public void goTo0 () {
-        double distance = 0;
-        newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
-        robot.viperSlideLift.setTargetPosition(newTarget);
-    }
-
-    public void goTo3 () {
-        double distance = 25;
-        newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
-        robot.viperSlideLift.setTargetPosition(newTarget);
-    }
-
-    public void rotateDown(){
+    public void deposit() {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
     }
 
-    public void rotateUp() {
+    public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
     }
+
 }

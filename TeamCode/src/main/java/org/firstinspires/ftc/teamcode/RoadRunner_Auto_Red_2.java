@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorBLUE;
+import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -19,8 +20,8 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();
-    private final ContoursPixelLocatorBLUE pipeline = new ContoursPixelLocatorBLUE(telemetry); //update this for new pipeline
-    ContoursPixelLocatorBLUE.ConePosition conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT; //change this
+    private final ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
+    ContoursPixelLocatorRED.ConePosition conePosition = ContoursPixelLocatorRED.ConePosition.LEFT; //change this
 
     static final double COUNTS_PER_MOTOR_REV = 1440;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
@@ -91,11 +92,11 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
                 .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
                 .lineToSplineHeading(new Pose2d(30, -40, Math.toRadians(270)))
-                .waitSeconds(.5)
                 .forward(5)
+                .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
@@ -105,23 +106,24 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(25, -40, Math.toRadians(270)))
                 .waitSeconds(.5)
                 .forward(5)
+                .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(38,2, Math.toRadians(180)))
-                .strafeLeft(20)
-                .addDisplacementMarker( 58, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .waitSeconds(.5)
+                .lineToSplineHeading(new Pose2d(30,-2, Math.toRadians(0)))
+                .addDisplacementMarker( 30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .strafeLeft(2)
+                .back(5)
                 .addDisplacementMarker(this::deposit)
                 .lineToSplineHeading(new Pose2d(17, -40, Math.toRadians(270)))
                 .waitSeconds(.25)
                 .forward(5)
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(40, -40, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
                 .build();
 
 
@@ -149,99 +151,6 @@ public class RoadRunner_Auto_Red_2 extends LinearOpMode {
 
             }
 
-
-// The next segment is a simple example. Notice how all the trajectories start where the last one ended or the beginning point(startPose, traj1.end, ect).
-// If you cant figure out command to use visit:https://learnroadrunner.com/trajectorybuilder-functions.html#forward-distance-double
-
-
-//    Trajectory traj1 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-//            .lineToLinearHeading(new Pose2d(46, -23, Math.toRadians(0)))
-//            .build();
-//
-//    Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-//            .lineToLinearHeading(new Pose2d(23, -23, Math.toRadians(180)))
-//            .build();
-//
-//
-//        waitForStart();
-//
-//        if (isStopRequested()) return;
-//
-//        drive.followTrajectory(traj1);
-//
-//        drive.followTrajectory(traj2);
-//
-//        drive.followTrajectory(traj3);
-
-
-
-// It works but we have a lot of code. Using TrajectorySequence we can simplify it.
-// Notice on the Dashboard, it is only shown as a single path unlike the previous example.
-// Make sure to use .waitSeconds() NOT .wait() if you want a delay.
-
-//    TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .lineToLinearHeading(new Pose2d(46, -23, Math.toRadians(0)))
-// Like this .waitSeconds(500)
-//            .lineToLinearHeading(new Pose2d(23, -23, Math.toRadians(180)))
-//            .strafeRight(23)
-//            .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
-//            .build();
-
-//        waitForStart();
-
-//        if (!isStopRequested())
-//            drive.followTrajectorySequence(trajSeq);
-
-//Here is a simple example with the webcam.
-//
-//    Trajectory traj1 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj2 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(23, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj3 = drive.trajectoryBuilder(startPose)
-//            .splineToConstantHeading(new Vector2d(23,0), Math.toRadians(0))
-//            .splineToConstantHeading(new Vector2d(23,-23), Math.toRadians(0))
-//            .build();
-//
-//
-//        waitForStart();
-//
-//        if (!isStopRequested())
-//            getAnalysis = pipeline.getPropPosition();
-//            sleep(1000);
-//            switch (getAnalysis) {
-//                case LEFT: { //one
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj1);
-//                    break;
-//
-//                }
-//
-//                case CENTER: { //two
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj2);
-//                   break;
-//                }
-//
-//
-//                case RIGHT: { //three
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj3);
-//                    break;
-//                }
-//
-//            }
-//
-//
     }
 
     public void deposit() {

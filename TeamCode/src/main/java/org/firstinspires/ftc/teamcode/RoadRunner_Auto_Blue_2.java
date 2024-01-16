@@ -90,30 +90,33 @@ public class RoadRunner_Auto_Blue_2 extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(27,5,Math.toRadians(90)))
                 .addDisplacementMarker(27, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(20, 45, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(50, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(5, 35, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(28,0,Math.toRadians(90)))
                 .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(25,45, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(50,35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(5,35, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(28,-3,Math.toRadians(0)))
                 .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .addDisplacementMarker(this::deposit)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(31, 45, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(50, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(5, 35, Math.toRadians(90)))
                 .build();
 
         switch (conePosition) {

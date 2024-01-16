@@ -13,15 +13,20 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 @TeleOp(name="Driver control 2024", group="TeleOp")
 public class DriverControl2024 extends OpMode {
+    //TODO: FIX HANG WITH RIGHT DPAD TO USE LIFT STATE MACHINE
+    //red auto
+    //hang
+    //win 1st inspire!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private ElapsedTime runtime = new ElapsedTime(); //clock
     private ElapsedTime liftTimer = new ElapsedTime();
+
     private ElapsedTime slideTimer = new ElapsedTime();
     private ElapsedTime droneSaftey = new ElapsedTime();
     private ElapsedTime hangSaftey = new ElapsedTime();
     double intakeDownDelayTime = 800;
     double intakeUpDelayTime = 800;
     double droneSafteyTimer = 90000;
-    double hangSafteyTimer = 0;
+    double hangSafteyTimer = 90000;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     public enum LiftState {
         LIFT_UP,
@@ -71,7 +76,7 @@ public class DriverControl2024 extends OpMode {
 
     int newTarget = 0;
 
-    static double ARM_COUNTS_PER_INCH = 80; //Figure out right number //114.75
+    static double ARM_COUNTS_PER_INCH = 80*2.65; //Figure out right number //114.75
     static double SLIDE_COUNTS_PER_INCH = 80;
 
     @Override
@@ -135,7 +140,7 @@ public class DriverControl2024 extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFrontPower, rightFrontPower);
         telemetry.addData("Status", "BRENNAN AND EGG MAN YOU BETTER NOT GET ANY PENALTIES OR ELSE . . .");
-        telemetry.update();
+
 
         if (Math.abs(gamepad2.left_trigger - gamepad2.right_trigger) > .1) {
             robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
@@ -197,7 +202,7 @@ public class DriverControl2024 extends OpMode {
             if (currentMovement4 && !lastMovement4) {
                 downPosition4 = !downPosition4;
                 if (downPosition4) {
-                    hang();
+                    goTo3();
                 } else {
 
                 }
@@ -216,7 +221,9 @@ public class DriverControl2024 extends OpMode {
             }
         }
         telemetry.addData("position",robot.pixelHolderRotator.getPosition());
-        telemetry.update();
+        telemetry.addData("LIFT STATE",liftState);
+        telemetry.addData("SLIDE STATE", slideState);
+
 
 
         if (gamepad2.dpad_up){
@@ -226,8 +233,7 @@ public class DriverControl2024 extends OpMode {
         switch (liftState) {
             case LIFT_UP:
                 if (gamepad2.dpad_down){
-                    robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS);
-                    robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+                    //robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
                     goTo0();
                     liftState = LiftState.LIFT_LOWER;
                     liftTimer.reset();
@@ -276,6 +282,7 @@ public class DriverControl2024 extends OpMode {
                 }
                 break;
         }
+        telemetry.update();
 
     }
 

@@ -76,7 +76,7 @@ public class DriverControl2024 extends OpMode {
 
     int newTarget = 0;
 
-    static double ARM_COUNTS_PER_INCH = 80*2.65; //Figure out right number //114.75
+    static double ARM_COUNTS_PER_INCH = 80; //Figure out right number //114.75
     static double SLIDE_COUNTS_PER_INCH = 80;
 
     @Override

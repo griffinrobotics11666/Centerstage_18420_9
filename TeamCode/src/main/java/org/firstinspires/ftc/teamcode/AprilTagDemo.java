@@ -25,6 +25,9 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -53,10 +56,19 @@ public class AprilTagDemo extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    double fx = 1417.61085783;//old 578.272;
-    double fy = 1417.61085783;//old 578.272;
-    double cx = 691.081281972;//old 402.145;
-    double cy = 334.496879075; //old 221.506;
+
+    double fx = 822.317;
+    double fy = 822.317;
+    double cx = 319.495;
+    double cy = 242.502;
+    //double fx = 1417.61085783;
+    //double fx = 578.272; //old
+    //double fy = 1417.61085783;
+    //double fy = 578.272; //old
+    //double cx = 691.081281972;
+    //double cx = 402.145; //old
+    //double cy = 334.496879075;
+    //double cy = 221.506; //old
 
     // UNITS ARE METERS
     double tagsize = 0.166;
@@ -68,9 +80,18 @@ public class AprilTagDemo extends LinearOpMode
     final float THRESHOLD_HIGH_DECIMATION_RANGE_METERS = 1.0f;
     final int THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION = 4;
 
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
     @Override
     public void runOpMode()
     {
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -98,8 +119,21 @@ public class AprilTagDemo extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
+
+
         while (opModeIsActive())
         {
+            double leftPower;
+            double rightPower;
+            double drive = -gamepad1.left_stick_y;
+            double turn  =  gamepad1.right_stick_x;
+            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            leftFrontDrive.setPower(leftPower/2);
+            leftBackDrive.setPower(leftPower/2);
+            rightFrontDrive.setPower(rightPower/2);
+            rightBackDrive.setPower(rightPower/2);
+
             packet = new TelemetryPacket();
 
             // Calling getDetectionsUpdate() will only return an object if there was a new frame
@@ -156,7 +190,7 @@ public class AprilTagDemo extends LinearOpMode
                 telemetry.update();
             }
 
-            sleep(20);
+            //sleep(20);
         }
     }
 }

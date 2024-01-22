@@ -54,6 +54,13 @@ public class DriverControl2024 extends OpMode {
     public static double HANGHANGINGPOS = 0.5;
     //public static double SERVODESPOSITEPOS = 0.5;
     //public static double SERVOSTOREPOS = 0;
+    public static double PINCHERLEFTOPEN = 0.1;
+    public static double PINCHERLEFTCLOSE = 0.5;
+    public static double PINCHERRIGHTOPEN = 0.1;
+    public static double PINCHERRIGHTCLOSE = 0.5;
+
+
+
 
     boolean lastMovement= false; boolean currentMovement= false;
     boolean downPosition= true;
@@ -91,11 +98,7 @@ public class DriverControl2024 extends OpMode {
         robot.viperSlideLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.viperSlideLift.setPower(1);
 
-        robot.slideMotor.setDirection(DcMotor.Direction.FORWARD);
-        robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.slideMotor.setTargetPosition(0);
-        robot.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.slideMotor.setPower(.7);
+
 
     }
 
@@ -224,6 +227,14 @@ public class DriverControl2024 extends OpMode {
         telemetry.addData("LIFT STATE",liftState);
         telemetry.addData("SLIDE STATE", slideState);
 
+        if (gamepad1.y) {
+            robot.pinchertheright.setPosition(PINCHERRIGHTCLOSE);
+            robot.pinchertheleft.setPosition(PINCHERLEFTCLOSE);
+        }else{
+            robot.pinchertheright.setPosition(PINCHERRIGHTOPEN);
+            robot.pinchertheleft.setPosition(PINCHERLEFTOPEN);
+        }
+
 
 
         if (gamepad2.dpad_up){
@@ -252,36 +263,7 @@ public class DriverControl2024 extends OpMode {
         }
 
 
-        switch (slideState) {
-            case SLIDE_READY:
-                if (gamepad2.right_bumper) {
-                    robot.intakeBox.setPosition(INTAKEBOXDOWN);
-                    slideState = SlideState.SLIDE_EXTEND;
-                    slideTimer.reset();
-                }
-                break;
-            case SLIDE_EXTEND:
-                if (slideTimer.milliseconds() >= intakeDownDelayTime) {
-                    extend();
-                    slideState = SlideState.SLIDE_IDLE;
-                    slideTimer.reset();
-                }
-                break;
-            case SLIDE_IDLE:
-                if (gamepad2.left_bumper) {
-                robot.intakeBox.setPosition(INTAKEBOXINIT);
-                slideState = SlideState.SLIDE_RETRACT;
-                slideTimer.reset();
-            }
-                break;
-            case SLIDE_RETRACT:
-                if (slideTimer.milliseconds() >= intakeUpDelayTime) {
-                    retract();
-                    slideState = SlideState.SLIDE_READY;
-                    slideTimer.reset();
-                }
-                break;
-        }
+
         telemetry.update();
 
     }
@@ -297,16 +279,7 @@ public class DriverControl2024 extends OpMode {
         newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
     }
-    public void extend() {
-        double distance = 4;
-        newTarget = (int) (distance * SLIDE_COUNTS_PER_INCH);
-        robot.slideMotor.setTargetPosition(newTarget);
-    }
-    public void retract() {
-        double distance = 0;
-        newTarget = (int) (distance * SLIDE_COUNTS_PER_INCH);
-        robot.slideMotor.setTargetPosition(newTarget);
-    }
+
     public void hang() {
         double distance = 26;
         newTarget = (int) (distance * ARM_COUNTS_PER_INCH);

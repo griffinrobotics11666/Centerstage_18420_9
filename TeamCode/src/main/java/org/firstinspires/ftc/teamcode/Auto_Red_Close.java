@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorBLUE;
 import org.firstinspires.ftc.teamcode.Pipelines.ContoursPixelLocatorRED;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -15,8 +14,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(group = "Auto Blue")
-public class RoadRunner_Auto_Red_2 extends LinearOpMode {
+@Autonomous(group = "Auto Red")
+public class Auto_Red_Close extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();

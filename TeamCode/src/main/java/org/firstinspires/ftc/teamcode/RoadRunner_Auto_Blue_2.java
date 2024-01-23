@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(group = "Auto Blue")
+@Autonomous(group = "Auto Blue CLOSE")
 public class RoadRunner_Auto_Blue_2 extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up

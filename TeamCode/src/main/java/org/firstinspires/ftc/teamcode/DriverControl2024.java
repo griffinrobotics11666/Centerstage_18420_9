@@ -120,13 +120,13 @@ public class DriverControl2024 extends OpMode {
         double rightBackPower;
 
         double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.right_stick_x;
-        double strafe = gamepad1.left_stick_x;
+        double turn = -gamepad1.right_stick_x;
+        double strafe = -gamepad1.left_stick_x;
 
-        leftFrontPower = Range.clip(drive + turn + strafe, -1.0, 1.0);
-        leftBackPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
-        rightFrontPower = Range.clip(drive - turn - strafe, -1.0, 1.0);
-        rightBackPower = Range.clip(drive - turn + strafe, -1.0, 1.0);
+        leftFrontPower = Range.clip(drive - turn - strafe, -1.0, 1.0);
+        leftBackPower = Range.clip(drive - turn + strafe, -1.0, 1.0);
+        rightBackPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
+        rightFrontPower = Range.clip(drive + turn + strafe, -1.0, 1.0);
 
         if (gamepad1.right_trigger > 0) {
             leftFrontPower = leftFrontPower * slowfactor;

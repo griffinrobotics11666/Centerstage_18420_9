@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(group = "Auto Red")
+@Autonomous(group = "Auto Red FAR")
 public class Auto_Red_far extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up
@@ -75,19 +75,19 @@ public class Auto_Red_far extends LinearOpMode {
 
 
         while (opModeInInit()) {
-            //telemetry.addData("Realtime analysis", pipeline.getPropPosition());
+            telemetry.addData("Realtime analysis", pipeline.getPropPosition());
             telemetry.update();
             sleep(50);
 
         }
-        //conePosition = pipeline.getPropPosition();
-        //telemetry.addData("Snapshot post-START analysis", conePosition);
+        conePosition = pipeline.getPropPosition();
+        telemetry.addData("Snapshot post-START analysis", conePosition);
         telemetry.update();
 
         if (!isStopRequested())
-            //conePosition = pipeline.getPropPosition();
-        //webcam.closeCameraDevice();
-            sleep(1000);
+            conePosition = pipeline.getPropPosition();
+        webcam.closeCameraDevice();
+        sleep(1000);
         conePosition = ContoursPixelLocatorRED.ConePosition.LEFT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 

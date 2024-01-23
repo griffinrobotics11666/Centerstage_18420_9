@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(group = "Auto Red")
+@Autonomous(group = "Auto Red CLOSE")
 public class Auto_Red_Close extends LinearOpMode {
 
     OpenCvWebcam webcam; //add other code to get the camera set up

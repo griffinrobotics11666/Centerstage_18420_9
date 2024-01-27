@@ -79,19 +79,21 @@ public class AprilTagDemo extends LinearOpMode
     final float DECIMATION_LOW = 2;
     final float THRESHOLD_HIGH_DECIMATION_RANGE_METERS = 1.0f;
     final int THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION = 4;
-
+    /*
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+
+     */
     @Override
     public void runOpMode()
     {
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        /*leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");*/
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -123,6 +125,7 @@ public class AprilTagDemo extends LinearOpMode
 
         while (opModeIsActive())
         {
+            /*
             double leftPower;
             double rightPower;
             double drive = -gamepad1.left_stick_y;
@@ -133,7 +136,7 @@ public class AprilTagDemo extends LinearOpMode
             leftBackDrive.setPower(leftPower/2);
             rightFrontDrive.setPower(rightPower/2);
             rightBackDrive.setPower(rightPower/2);
-
+*/
             packet = new TelemetryPacket();
 
             // Calling getDetectionsUpdate() will only return an object if there was a new frame

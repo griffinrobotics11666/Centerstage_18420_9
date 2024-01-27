@@ -16,31 +16,31 @@ public class Hardwarerobot
     public DcMotor  rightFrontDrive  = null;
     public DcMotor  rightBackDrive  = null;
     public DcMotor viperSlideLift = null;
+    public DcMotor viperSlideLifttwo = null;
     public DcMotor intake = null;
-
-
-    //public Servo viperServo1 = null;
-    //public Servo viperServo2 = null;
     public Servo pixelBox = null;
     public Servo pixelHolderRotator = null;
-    public Servo pixelHolderDoor = null;
-    public Servo intakeBox = null;
     public Servo droneLauncher = null;
     public Servo auto = null;
     public Servo pinchertheright = null;
     public Servo pinchertheleft = null;
     public Servo wrist = null;
+    public Servo mosaic = null;
 
 
-    public static double PIXELHOLDERROTATOR_STORE_POS = 0.9; //.75
-    public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0;
+    public static double PIXELHOLDERROTATOR_STORE_POS = 0; //.75
+    public static double PIXELHOLDERROTATOR_INIT_POS = 0.025;
+    public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0.7;
+    public static double PIXELHOLDERROTATOR_AUTO_POS = 0.8;
 
     public static double AUTO_CLOSED_POS = 0.5;
     public static double AUTO_OPEN_POS = 0;
 
-    public static double WRIST_DEPOSIT_POS = 0.2;
+    public static double WRIST_DEPOSIT_POS = 0.15;
     public static double WRIST_STORE_POS = 0;
-    //add extra wrist positions if needed
+
+    public static double MOSAIC_DEPOSIT_POS = .2;
+    public static double MOSAIC_STORE_POS = 0;
 
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -55,43 +55,40 @@ public class Hardwarerobot
         rightFrontDrive = hwMap.get(DcMotor.class, "FR");
         rightBackDrive = hwMap.get(DcMotor.class, "BR");
         viperSlideLift = hwMap.get(DcMotor.class, "viperSlideLift");
+        viperSlideLifttwo = hwMap.get(DcMotor.class, "viperSlideLifttwo");
         intake =  hwMap.get(DcMotor.class, "intake");
-      //  viperServo1 = hwMap.get(Servo.class,"viperServo1");
-        //viperServo2 = hwMap.get(Servo.class, "viperServo2");
         pixelBox = hwMap.get(Servo.class, "pixelBox");
         pixelHolderRotator = hwMap.get(Servo.class,"pixelHolderRotator");
-        pixelHolderDoor = hwMap.get(Servo.class,"pixelHolderDoor");
-        intakeBox = hwMap.get(Servo.class,"intakeBox");
         droneLauncher = hwMap.get(Servo.class,"droneLauncher");
         auto = hwMap.get(Servo.class, "auto_servo");
         pinchertheright = hwMap.get(Servo.class, "pinchertheright");
         pinchertheleft = hwMap.get(Servo.class, "pinchertheleft");
         wrist = hwMap.get(Servo.class, "wrist");
+        mosaic = hwMap.get(Servo.class, "mosaic");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         viperSlideLift.setDirection(DcMotor.Direction.FORWARD);
+        viperSlideLifttwo.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.FORWARD);
 
-      //  viperServo1.setDirection(Servo.Direction.FORWARD);
-       // viperServo2.setDirection(Servo.Direction.REVERSE);
         pixelBox.setDirection(Servo.Direction.FORWARD);
-        pixelHolderRotator.setDirection(Servo.Direction.REVERSE);
-        pixelHolderDoor.setDirection(Servo.Direction.REVERSE);
-        intakeBox.setDirection(Servo.Direction.REVERSE);
+        pixelHolderRotator.setDirection(Servo.Direction.FORWARD);
         droneLauncher.setDirection(Servo.Direction.FORWARD);
         auto.setDirection(Servo.Direction.FORWARD);
         pinchertheright.setDirection(Servo.Direction.REVERSE);
         pinchertheleft.setDirection(Servo.Direction.FORWARD);
         wrist.setDirection(Servo.Direction.REVERSE);
+        mosaic.setDirection(Servo.Direction.FORWARD);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         viperSlideLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        viperSlideLifttwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFrontDrive.setPower(0);
@@ -103,6 +100,10 @@ public class Hardwarerobot
         viperSlideLift.setTargetPosition(0);
         viperSlideLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperSlideLift.setPower(0);
+        viperSlideLifttwo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperSlideLifttwo.setTargetPosition(0);
+        viperSlideLifttwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperSlideLifttwo.setPower(0);
 
         leftBackDrive.setTargetPosition(0);
         leftFrontDrive.setTargetPosition(0);
@@ -115,16 +116,13 @@ public class Hardwarerobot
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-      //  viperServo1.setPosition(0);
-       // viperServo2.setPosition(0);
         pixelBox.setPosition(0);
-        pixelHolderRotator.setPosition(0.65);
-        pixelHolderDoor.setPosition(1);
-        intakeBox.setPosition(.5);
+        pixelHolderRotator.setPosition(PIXELHOLDERROTATOR_INIT_POS);
         droneLauncher.setPosition(0);
         auto.setPosition(AUTO_CLOSED_POS);
         pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTOPEN);
         pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTOPEN);
         wrist.setPosition(0);
+        mosaic.setPosition(0);
     }
 }

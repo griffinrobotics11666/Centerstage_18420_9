@@ -35,7 +35,6 @@ public class Auto_Red_far extends LinearOpMode {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
     static double ARM_COUNTS_PER_INCH = 80; //Figure out right number //114.75
-    static double SLIDE_COUNTS_PER_INCH = 80;
 
     static final double HEADING_THRESHOLD = .5;
     static final double P_TURN_COEFF = 0.075;
@@ -91,18 +90,28 @@ public class Auto_Red_far extends LinearOpMode {
         conePosition = ContoursPixelLocatorRED.ConePosition.LEFT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
-
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(30, 2, Math.toRadians(180)))
                 .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .lineToSplineHeading(new Pose2d(50, 0, Math.toRadians(270)))
-                .lineToSplineHeading(new Pose2d(45, -70, Math.toRadians(270)))
-                .addDisplacementMarker(() -> robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS))
-                .lineToSplineHeading(new Pose2d(28, -70, Math.toRadians(270)))
-                .waitSeconds(1)
-                .lineToSplineHeading(new Pose2d(28, -88, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .back(7)
+                .waitSeconds(.5)
+                .addDisplacementMarker(63, this::eat)
+                .addDisplacementMarker(63, this::moreEating)
+                .lineToSplineHeading(new Pose2d(50, -70, Math.toRadians(270)))
+                .addDisplacementMarker(123, this::raise)
+                .addDisplacementMarker(123, this::stopEating)
+                .waitSeconds(.5)
+                .lineToSplineHeading(new Pose2d(35, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(31, -87, Math.toRadians(270)))
                 .addDisplacementMarker(this::retract)
+                .waitSeconds(.5)
                 .lineToSplineHeading(new Pose2d(30, -79, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 25, Math.toRadians(270)))
+                //.addTemporalMarker(() -> this.eat())
+                //.addTemporalMarker(() -> this.moreEating())
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
@@ -113,157 +122,47 @@ public class Auto_Red_far extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(25, -2, Math.toRadians(90)))
                 .build();
 
-        TrajectorySequence park_center = drive.trajectorySequenceBuilder(trajSeq_center.end())
-                .back(4)
-                .build();
-        TrajectorySequence park_right = drive.trajectorySequenceBuilder(trajSeq_right.end())
-                .back(4)
-                .build();
-        TrajectorySequence park_left = drive.trajectorySequenceBuilder(trajSeq_left.end())
-                .back(4)
-                .build();
         switch (conePosition) {
-
 
             case LEFT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_left);
-
                 break;
-
-
-
 
             case CENTER:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_center);
-
-                    sleep(2000);
-                    drive.followTrajectorySequence(park_center);
-
-                    sleep(5000);
                 break;
-
-
 
             case RIGHT:
                 if (!isStopRequested())
                     drive.followTrajectorySequence(trajSeq_right);
-
-                    sleep(2000);
-                    drive.followTrajectorySequence(park_right);
-
-                    sleep(5000);
                 break;
-
-
-
         }
-
-
-// The next segment is a simple example. Notice how all the trajectories start where the last one ended or the beginning point(startPose, traj1.end, ect).
-// If you cant figure out command to use visit:https://learnroadrunner.com/trajectorybuilder-functions.html#forward-distance-double
-
-
-//    Trajectory traj1 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-//            .lineToLinearHeading(new Pose2d(46, -23, Math.toRadians(0)))
-//            .build();
-//
-//    Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-//            .lineToLinearHeading(new Pose2d(23, -23, Math.toRadians(180)))
-//            .build();
-//
-//
-//        waitForStart();
-//
-//        if (isStopRequested()) return;
-//
-//        drive.followTrajectory(traj1);
-//
-//        drive.followTrajectory(traj2);
-//
-//        drive.followTrajectory(traj3);
-
-
-// It works but we have a lot of code. Using TrajectorySequence we can simplify it.
-// Notice on the Dashboard, it is only shown as a single path unlike the previous example.
-// Make sure to use .waitSeconds() NOT .wait() if you want a delay.
-
-//    TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .lineToLinearHeading(new Pose2d(46, -23, Math.toRadians(0)))
-// Like this .waitSeconds(500)
-//            .lineToLinearHeading(new Pose2d(23, -23, Math.toRadians(180)))
-//            .strafeRight(23)
-//            .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
-//            .build();
-
-//        waitForStart();
-
-//        if (!isStopRequested())
-//            drive.followTrajectorySequence(trajSeq);
-
-//Here is a simple example with the webcam.
-//
-//    Trajectory traj1 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(46, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj2 = drive.trajectoryBuilder(startPose)
-//            .lineToLinearHeading(new Pose2d(23, 0, Math.toRadians(-90)))
-//            .build();
-//
-//    Trajectory traj3 = drive.trajectoryBuilder(startPose)
-//            .splineToConstantHeading(new Vector2d(23,0), Math.toRadians(0))
-//            .splineToConstantHeading(new Vector2d(23,-23), Math.toRadians(0))
-//            .build();
-//
-//
-//        waitForStart();
-//
-//        if (!isStopRequested())
-//            getAnalysis = pipeline.getAnalysis();
-//            sleep(1000);
-//            switch (getAnalysis) {
-//                case LEFT: { //one
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj1);
-//                    break;
-//
-//                }
-//
-//                case CENTER: { //two
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj2);
-//                   break;
-//                }
-//
-//
-//                case RIGHT: { //three
-//                    if (!isStopRequested())
-//                        drive.followTrajectory(traj3);
-//                    break;
-//                }
-//
-//            }
-//
-//
-
-
-
-
     }
 
-    public void deposit() {
-        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+    public void raise() {
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+        robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
     }
 
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+    }
+
+    public void eat() {
+        robot.intake.setPower(1);
+        robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTCLOSE);
+        robot.pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTCLOSE);
+    }
+    public void moreEating() {
+        robot.intake.setPower(1);
+        robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTOPEN);
+        robot.pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTOPEN);
+    }
+
+    public void stopEating() {
+        robot.intake.setPower(0);
     }
 
 }

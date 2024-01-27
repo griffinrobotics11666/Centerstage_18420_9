@@ -13,69 +13,34 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 @TeleOp(name="Driver control 2024", group="TeleOp")
 public class DriverControl2024 extends OpMode {
-    //TODO: FIX HANG WITH RIGHT DPAD TO USE LIFT STATE MACHINE
-    //red auto
-    //hang
-    //win 1st inspire!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private ElapsedTime runtime = new ElapsedTime(); //clock
     private ElapsedTime liftTimer = new ElapsedTime();
 
-    private ElapsedTime slideTimer = new ElapsedTime();
     private ElapsedTime droneSaftey = new ElapsedTime();
-    private ElapsedTime hangSaftey = new ElapsedTime();
-    double intakeDownDelayTime = 800;
-    double intakeUpDelayTime = 800;
     double droneSafteyTimer = 90000;
-    double hangSafteyTimer = 90000;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     public enum LiftState {
         LIFT_UP,
-        LIFT_LOWER
+        LIFT_LOWER,
+        LIFT_HANG;
     }
     LiftState liftState = LiftState.LIFT_LOWER;
-    public enum SlideState {
-        SLIDE_READY,
-        SLIDE_EXTEND,
-        SLIDE_IDLE,
-        SLIDE_RETRACT
-    }
-    SlideState slideState = SlideState.SLIDE_READY;
 
-    public static double PIXELHOLDERDOOR_STORE_POS = 0.9;
-    public static double PIXELHOLDERDOOR_DEPOSIT_POS = 0.5;
-    public static double PIXELDOOR2_STORE_POS = 0.9;
-    public static double PIXELDOOR2_DEPOSIT_POS = 0.5;
-    public static double INTAKEBOXUP = .68;
-    public static double INTAKEBOXINIT = .5;
-    public static double INTAKEBOXDOWN = 0.03;
     public static double CLOSEPOSITION = 0;
     public static double FIRE = .5;
-    public static double HANGCLOSEPOS = 0;
-    public static double HANGHANGINGPOS = 0.5;
-    //public static double SERVODESPOSITEPOS = 0.5;
-    //public static double SERVOSTOREPOS = 0;
     public static double PINCHERLEFTOPEN = 0.1;
     public static double PINCHERLEFTCLOSE = 0.5;
     public static double PINCHERRIGHTOPEN = 0.1;
     public static double PINCHERRIGHTCLOSE = 0.5;
 
+    boolean lastMovement1 = false; boolean currentMovement1 = false;
+    boolean downPosition1 = true;
 
-
-
-    boolean lastMovement= false; boolean currentMovement= false;
-    boolean downPosition= true;
-
-    boolean lastMovement2= false; boolean currentMovement2= false;
-    boolean downPosition2= true;
+    boolean lastMovement2 = false; boolean currentMovement2 = false;
+    boolean downPosition2 = true;
 
     boolean lastMovement3 = false; boolean currentMovement3 = false;
     boolean downPosition3 = true;
-
-    boolean lastMovement4 = false; boolean currentMovement4 = false;
-    boolean downPosition4 = true;
-
-    boolean lastMovement5 = false; boolean currentMovement5 = false;
-    boolean downPosition5 = true;
 
     Hardwarerobot robot = new Hardwarerobot();
     HardwareMap hwMap = null;
@@ -83,8 +48,7 @@ public class DriverControl2024 extends OpMode {
 
     int newTarget = 0;
 
-    static double ARM_COUNTS_PER_INCH = 80; //Figure out right number //114.75
-    static double SLIDE_COUNTS_PER_INCH = 80;
+    static double ARM_COUNTS_PER_INCH = 80;
 
     @Override
     public void init() {
@@ -98,7 +62,11 @@ public class DriverControl2024 extends OpMode {
         robot.viperSlideLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.viperSlideLift.setPower(1);
 
-
+        robot.viperSlideLifttwo.setDirection(DcMotor.Direction.FORWARD);
+        robot.viperSlideLifttwo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.viperSlideLifttwo.setTargetPosition(0);
+        robot.viperSlideLifttwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.viperSlideLifttwo.setPower(1);
 
     }
 
@@ -160,31 +128,31 @@ public class DriverControl2024 extends OpMode {
             }
         }
 
-        lastMovement = currentMovement;
-        currentMovement = gamepad2.y;
+        lastMovement1 = currentMovement1;
+        currentMovement1 = gamepad2.y;
 
-        if (currentMovement && !lastMovement) {
-            downPosition = !downPosition;
-            if (downPosition) {
+        if (currentMovement1 && !lastMovement1) {
+            downPosition1 = !downPosition1;
+            if (downPosition1) {
+                robot.wrist.setPosition(robot.WRIST_STORE_POS);
                 robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
             } else {
+                robot.wrist.setPosition(robot.WRIST_STORE_POS);
                 robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
             }
         }
-/*
+
         lastMovement2 = currentMovement2;
-        currentMovement2 = gamepad2.b;
+        currentMovement2 = gamepad1.b;
 
         if (currentMovement2 && !lastMovement2) {
             downPosition2 = !downPosition2;
-            if (downPosition2) {
-                robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_DEPOSIT_POS); //Move Down
+            if(downPosition2){
+                robot.mosaic.setPosition(robot.MOSAIC_DEPOSIT_POS);
             } else {
-                robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_STORE_POS);
+                robot.mosaic.setPosition(robot.MOSAIC_STORE_POS);
             }
         }
-
- */
 
         lastMovement3 = currentMovement3;
         currentMovement3 = gamepad2.a;
@@ -192,42 +160,16 @@ public class DriverControl2024 extends OpMode {
         if (currentMovement3 && !lastMovement3) {
             downPosition3 = !downPosition3;
             if (downPosition3) {
-                robot.intakeBox.setPosition(INTAKEBOXDOWN);
+                robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+                robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
             } else {
-                robot.intakeBox.setPosition(INTAKEBOXUP);
+                robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+                robot.wrist.setPosition(robot.WRIST_STORE_POS);
             }
         }
 
-        lastMovement4 = currentMovement4;
-        currentMovement4 = gamepad2.dpad_right;
 
-        if (hangSaftey.milliseconds() >= hangSafteyTimer) {
-            if (currentMovement4 && !lastMovement4) {
-                downPosition4 = !downPosition4;
-                if (downPosition4) {
-                    goTo3();
-                } else {
-
-                }
-            }
-        }
-
-        lastMovement5 = currentMovement5;
-        currentMovement5 = gamepad2.b;
-
-        if (currentMovement5 && !lastMovement5) {
-            downPosition5 = !downPosition5;
-            if (downPosition5) {
-                robot.auto.setPosition(robot.AUTO_CLOSED_POS);
-            } else {
-                robot.auto.setPosition(robot.AUTO_OPEN_POS);
-            }
-        }
-        telemetry.addData("position",robot.pixelHolderRotator.getPosition());
-        telemetry.addData("LIFT STATE",liftState);
-        telemetry.addData("SLIDE STATE", slideState);
-
-        if (gamepad1.y) {
+        if (gamepad2.b) {
             robot.pinchertheright.setPosition(PINCHERRIGHTCLOSE);
             robot.pinchertheleft.setPosition(PINCHERLEFTCLOSE);
         }else{
@@ -235,34 +177,53 @@ public class DriverControl2024 extends OpMode {
             robot.pinchertheleft.setPosition(PINCHERLEFTOPEN);
         }
 
-
-
-        if (gamepad2.dpad_up){
-            goTo3();
+        if (Math.abs(gamepad2.left_stick_y)>.1){
+            double distance = -5*gamepad2.left_stick_y;
+            newTarget = robot.viperSlideLift.getCurrentPosition()+ (int) (distance * ARM_COUNTS_PER_INCH);
+            robot.viperSlideLift.setTargetPosition(newTarget);
+            robot.viperSlideLifttwo.setTargetPosition(newTarget);
+            liftState = LiftState.LIFT_UP;
         }
 
+
         switch (liftState) {
+
+            case LIFT_LOWER:
+                if (gamepad2.dpad_up){
+                    goTo1();
+                    robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+                    liftState = LiftState.LIFT_UP;
+                    liftTimer.reset();
+                }
+
             case LIFT_UP:
+                if (gamepad2.dpad_right){
+                    hang();
+                    liftState = LiftState.LIFT_HANG;
+                    liftTimer.reset();
+                }
                 if (gamepad2.dpad_down){
-                    //robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+                    goTo0();
+                    liftState = LiftState.LIFT_LOWER;
+                    liftTimer.reset();
+                }
+                if (gamepad2.dpad_up){
+                    goTo1();
+                    robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+                    liftState = LiftState.LIFT_UP;
+                    liftTimer.reset();
+                }
+                break;
+
+            case LIFT_HANG:
+                if (gamepad2.dpad_down){
                     goTo0();
                     liftState = LiftState.LIFT_LOWER;
                     liftTimer.reset();
                 }
                 break;
 
-            case LIFT_LOWER:
-                if(gamepad2.dpad_up){
-                    robot.pixelHolderDoor.setPosition(PIXELHOLDERDOOR_STORE_POS);
-                    goTo3();
-                    robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
-                    liftState = LiftState.LIFT_UP;
-                    liftTimer.reset();
-                }
-                break;
         }
-
-
 
         telemetry.update();
 
@@ -272,18 +233,21 @@ public class DriverControl2024 extends OpMode {
         double distance = 0;
         newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
+        robot.viperSlideLifttwo.setTargetPosition(newTarget);
 
     }
-    public void goTo3(){
+    public void goTo1(){
         double distance = 15;
         newTarget = (int) (distance *ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
+        robot.viperSlideLifttwo.setTargetPosition(newTarget);
     }
 
     public void hang() {
         double distance = 26;
         newTarget = (int) (distance * ARM_COUNTS_PER_INCH);
         robot.viperSlideLift.setTargetPosition(newTarget);
+        robot.viperSlideLifttwo.setTargetPosition(newTarget);
     }
 
     @Override

@@ -89,13 +89,13 @@ public class Auto_Red_Close extends LinearOpMode {
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(30,2, Math.toRadians(180)))
                 .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(30, -40, Math.toRadians(270)))
+                .addDisplacementMarker(this::raise)
+                .lineToSplineHeading(new Pose2d(32, -35, Math.toRadians(270)))
                 .forward(5)
                 .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(5, -35, Math.toRadians(270)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
@@ -158,6 +158,11 @@ public class Auto_Red_Close extends LinearOpMode {
 
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+    }
+
+    public void raise() {
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+        robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
     }
 
 

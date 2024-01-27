@@ -181,11 +181,11 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
                 .waitSeconds(1)
                 .lineToLinearHeading(new Pose2d(24,-72, Math.toRadians(-90)))
                 .waitSeconds(5)
+                .addTemporalMarker(()->detections = aprilTagDetectionPipeline.getDetectionsUpdate())
                 .addTemporalMarker(()->telemetry.addData("x: ",getDistanceFromAprilTagX(5,detections)))
                 .addTemporalMarker(()->telemetry.addData("z: ", getDistanceFromAprilTagZ(5,detections)))
                 .addTemporalMarker(()->telemetry.update())
                 .waitSeconds(5)
-                .addTemporalMarker(()->detections = aprilTagDetectionPipeline.getDetectionsUpdate())
                 .addTemporalMarker(()->drive.setPoseEstimate(
                         new Pose2d(23+getDistanceFromAprilTagX(5,detections),
                                 -95+getDistanceFromAprilTagZ(5,detections),

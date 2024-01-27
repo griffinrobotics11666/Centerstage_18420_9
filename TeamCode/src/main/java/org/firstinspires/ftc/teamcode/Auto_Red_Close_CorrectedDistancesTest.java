@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.AprilTagDemo.FEET_PER_METER;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +20,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 
-@Autonomous(group = "Auto Red CLOSE")
+@Autonomous(group = "Auto Red DIST TEST")
 public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
 
     double fx = 822.317;
@@ -29,7 +32,7 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();
     private ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
-    private AprilTagDetectionPipeline aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+    AprilTagDetectionPipeline aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
     ContoursPixelLocatorRED.ConePosition conePosition = ContoursPixelLocatorRED.ConePosition.LEFT; //change this
 
     static final double COUNTS_PER_MOTOR_REV = 1440;
@@ -52,6 +55,7 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
     final float DECIMATION_LOW = 2;
     final float THRESHOLD_HIGH_DECIMATION_RANGE_METERS = 1.0f;
     final int THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION = 4;
+    ArrayList<AprilTagDetection> detections = new ArrayList<AprilTagDetection>();
 
     @Override
     public void runOpMode() {
@@ -59,7 +63,7 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.init(hardwareMap);
 
-        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(-4.75, 0, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -100,9 +104,11 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
 
         webcam.setPipeline(aprilTagDetectionPipeline);
 
-        ArrayList<AprilTagDetection> detections = new ArrayList<>();
+        detections = aprilTagDetectionPipeline.getDetectionsUpdate();
+
+        /*
         int numFramesWithoutDetection = 0;
-        ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
+
         // If we don't see any tags
         if (detections.size() == 0) {
             numFramesWithoutDetection++;
@@ -122,50 +128,73 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
             if (detections.get(0).pose.z < THRESHOLD_HIGH_DECIMATION_RANGE_METERS) {
                 aprilTagDetectionPipeline.setDecimation(DECIMATION_HIGH);
             }
+        }
+        */
 
-            sleep(1000);
-            //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
 
-            robot.auto.setPosition(robot.AUTO_CLOSED_POS);
+        sleep(1000);
+        conePosition = ContoursPixelLocatorRED.ConePosition.RIGHT;
 
-            TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
-                    .lineToSplineHeading(new Pose2d(30, 2, Math.toRadians(180)))
-                    .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                    .addDisplacementMarker(this::deposit)
-                    .lineToSplineHeading(new Pose2d(30, -40, Math.toRadians(270)))
-                    .forward(5)
-                    .waitSeconds(.5)
-                    .addDisplacementMarker(this::retract)
-                    .back(5)
-                    .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
-                    .build();
-            
-            TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                    .lineToSplineHeading(new Pose2d(40, -2, Math.toRadians(180)))
-                    .addDisplacementMarker(40, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                    .addDisplacementMarker(this::deposit)
-                    .lineToSplineHeading(new Pose2d(25, -40, Math.toRadians(270)))
-                    .waitSeconds(.5)
-                    .forward(5)
-                    .waitSeconds(.5)
-                    .addDisplacementMarker(this::retract)
-                    .back(5)
-                    .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
-                    .build();
+        robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
-            TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                    .lineToSplineHeading(new Pose2d(30, -2, Math.toRadians(0)))
-                    .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                    .strafeLeft(2)
-                    .back(5)
-                    .addDisplacementMarker(this::deposit)
-                    .lineToSplineHeading(new Pose2d(17, -40, Math.toRadians(270)))
-                    .waitSeconds(.25)
-                    .forward(5)
-                    .addDisplacementMarker(this::retract)
-                    .back(5)
-                    .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
-                    .build();
+        TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(30, 2, Math.toRadians(180)))
+                .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(30, -40, Math.toRadians(270)))
+                .forward(5)
+                .waitSeconds(.5)
+                .addDisplacementMarker(this::retract)
+                .back(5)
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
+                .build();
+
+        TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(40, -2, Math.toRadians(180)))
+                .addDisplacementMarker(40, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(25, -40, Math.toRadians(270)))
+                .waitSeconds(.5)
+                .forward(5)
+                .waitSeconds(.5)
+                .addDisplacementMarker(this::retract)
+                .back(5)
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
+                .build();
+
+        TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(30, -2, Math.toRadians(0)))
+                .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .strafeLeft(2)
+                .back(5)
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(17, -40, Math.toRadians(270)))
+                .waitSeconds(.25)
+                .forward(5)
+                .addDisplacementMarker(this::retract)
+                .back(5)
+                .lineToSplineHeading(new Pose2d(5, -40, Math.toRadians(270)))
+                .build();
+
+        TrajectorySequence testTrajectory1 = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(24, 0, Math.toRadians(-90)))
+                .waitSeconds(1)
+                .lineToLinearHeading(new Pose2d(24,-72, Math.toRadians(-90)))
+                .waitSeconds(5)
+                .addTemporalMarker(()->telemetry.addData("x: ",getDistanceFromAprilTagX(5,detections)))
+                .addTemporalMarker(()->telemetry.addData("z: ", getDistanceFromAprilTagZ(5,detections)))
+                .addTemporalMarker(()->telemetry.update())
+                .waitSeconds(5)
+                .addTemporalMarker(()->detections = aprilTagDetectionPipeline.getDetectionsUpdate())
+                .addTemporalMarker(()->drive.setPoseEstimate(
+                        new Pose2d(23+getDistanceFromAprilTagX(5,detections),
+                                -95+getDistanceFromAprilTagZ(5,detections),
+                                Math.toRadians(-90))
+                ))
+                .strafeTo(new Vector2d(24,-84))
+                .waitSeconds(10)
+                .build();
+
 
 
             switch (conePosition) {
@@ -185,13 +214,17 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
 
                 case RIGHT:
                     if (!isStopRequested())
-                        drive.followTrajectorySequence(trajSeq_right);
+                        //drive.followTrajectorySequence(trajSeq_right);
+                        drive.followTrajectorySequence(testTrajectory1);
+
+
+
                     break;
 
 
             }
 
-        }
+
     }
     public void deposit() {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
@@ -199,6 +232,24 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
 
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+    }
+    public double getDistanceFromAprilTagZ(int id, ArrayList<AprilTagDetection> detections) {
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) - 0.6827);
+            }
+        }
+        return distance;
+    }
+    public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                distance = ((detection.pose.x * FEET_PER_METER * 1.395)-3.25);
+            }
+        }
+        return distance;
     }
 
 

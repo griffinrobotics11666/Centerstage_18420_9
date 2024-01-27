@@ -61,6 +61,7 @@ public class AprilTagDemo extends LinearOpMode
     double fy = 822.317;
     double cx = 319.495;
     double cy = 242.502;
+
     //double fx = 1417.61085783;
     //double fx = 578.272; //old
     //double fy = 1417.61085783;
@@ -79,21 +80,19 @@ public class AprilTagDemo extends LinearOpMode
     final float DECIMATION_LOW = 2;
     final float THRESHOLD_HIGH_DECIMATION_RANGE_METERS = 1.0f;
     final int THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION = 4;
-    /*
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightBackDrive = null;
 
-     */
+    private ElapsedTime runtime = new ElapsedTime();
+    //private DcMotor leftFrontDrive = null;
+    //private DcMotor rightFrontDrive = null;
+    //private DcMotor leftBackDrive = null;
+    //private DcMotor rightBackDrive = null;
     @Override
     public void runOpMode()
     {
-        /*leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");*/
+        //leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        //rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        //leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        //rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -125,18 +124,17 @@ public class AprilTagDemo extends LinearOpMode
 
         while (opModeIsActive())
         {
-            /*
-            double leftPower;
-            double rightPower;
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-            leftFrontDrive.setPower(leftPower/2);
-            leftBackDrive.setPower(leftPower/2);
-            rightFrontDrive.setPower(rightPower/2);
-            rightBackDrive.setPower(rightPower/2);
-*/
+            //double leftPower;
+            //double rightPower;
+            //double drive = -gamepad1.left_stick_y;
+            //double turn  =  gamepad1.right_stick_x;
+            //leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+            //rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            //leftFrontDrive.setPower(leftPower/2);
+            //leftBackDrive.setPower(leftPower/2);
+            //rightFrontDrive.setPower(rightPower/2);
+            //rightBackDrive.setPower(rightPower/2);
+
             packet = new TelemetryPacket();
 
             // Calling getDetectionsUpdate() will only return an object if there was a new frame
@@ -180,20 +178,41 @@ public class AprilTagDemo extends LinearOpMode
                     {
                         Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
                         packet.addLine(String.format("\nDetected tag ID=%d", detection.id));
-                        packet.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-                        packet.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-                        packet.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+                        packet.addLine(String.format("Translation X: %.2f feet", (detection.pose.x*FEET_PER_METER*2.593)-0.6827));
+                        packet.addLine(String.format("Translation Y: %.2f feet", (detection.pose.y*FEET_PER_METER*2.593)-0.6827));
+                        packet.addLine(String.format("Translation Z: %.2f feet", (detection.pose.z*FEET_PER_METER*2.593)-0.6827));
                         packet.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
                         packet.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
                         packet.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
-
+                        getDistanceFromAprilTagZ(4, detections);
+                        packet.addLine(String.format("getDistanceFromAprilTagZ: %.2f", getDistanceFromAprilTagZ(4, detections)));
+                        packet.addLine(String.format("getDistanceFromAprilTagX: %.2f", getDistanceFromAprilTagX(4, detections)));
                     }
                 }
+            }
                 dashboard.sendTelemetryPacket(packet);
                 telemetry.update();
             }
-
             //sleep(20);
         }
+        public double getDistanceFromAprilTagZ(int id, ArrayList<AprilTagDetection> detections) {
+            double distance = 0.00;
+            for(AprilTagDetection detection : detections) {
+                if (detection.id == id) {
+                    distance = ((detection.pose.z * FEET_PER_METER * 2.593) - 0.6827);
+                }
+            }
+            return distance;
+        }
+    public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                distance = ((detection.pose.x * FEET_PER_METER * 1.395)-3.25);
+            }
+        }
+        return distance;
     }
-}
+
+    }
+

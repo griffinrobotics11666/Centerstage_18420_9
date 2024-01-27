@@ -95,23 +95,39 @@ public class Auto_Red_far extends LinearOpMode {
                 .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
                 .back(7)
-                .waitSeconds(.5)
-                .addDisplacementMarker(63, this::eat)
-                .addDisplacementMarker(63, this::moreEating)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.2)
                 .lineToSplineHeading(new Pose2d(50, -70, Math.toRadians(270)))
                 .addDisplacementMarker(123, this::raise)
                 .addDisplacementMarker(123, this::stopEating)
-                .waitSeconds(.5)
-                .lineToSplineHeading(new Pose2d(35, -70, Math.toRadians(270)))
-                .lineToSplineHeading(new Pose2d(31, -87, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(33, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(33, -87, Math.toRadians(270)))
                 .addDisplacementMarker(this::retract)
-                .waitSeconds(.5)
+                .waitSeconds(.2)
                 .lineToSplineHeading(new Pose2d(30, -79, Math.toRadians(270)))
                 .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
                 .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
-                .lineToSplineHeading(new Pose2d(49, 25, Math.toRadians(270)))
-                //.addTemporalMarker(() -> this.eat())
-                //.addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(49, 24, Math.toRadians(270)))
+                .back(2)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.2)
+                .forward(6)
+                .waitSeconds(.3)
+                .back(5)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .addTemporalMarker(() -> this.raise())
+                .addTemporalMarker(() -> this.stopEating())
+                .lineToSplineHeading(new Pose2d(20, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(18, -87, Math.toRadians(270)))
+                .addTemporalMarker(() -> this.retract())
+                .waitSeconds(1)
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
@@ -147,6 +163,7 @@ public class Auto_Red_far extends LinearOpMode {
     }
 
     public void retract(){
+        robot.wrist.setPosition(robot.WRIST_STORE_POS);
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
     }
 

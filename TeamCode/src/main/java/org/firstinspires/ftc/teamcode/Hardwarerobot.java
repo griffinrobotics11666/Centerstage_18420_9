@@ -75,7 +75,7 @@ public class Hardwarerobot
         intake.setDirection(DcMotor.Direction.FORWARD);
 
         pixelBox.setDirection(Servo.Direction.FORWARD);
-        pixelHolderRotator.setDirection(Servo.Direction.FORWARD);
+        pixelHolderRotator.setDirection(Servo.Direction.REVERSE);
         droneLauncher.setDirection(Servo.Direction.FORWARD);
         auto.setDirection(Servo.Direction.FORWARD);
         pinchertheright.setDirection(Servo.Direction.REVERSE);

@@ -185,7 +185,6 @@ public class DriverControl2024 extends OpMode {
             liftState = LiftState.LIFT_UP;
         }
 
-
         switch (liftState) {
 
             case LIFT_LOWER:

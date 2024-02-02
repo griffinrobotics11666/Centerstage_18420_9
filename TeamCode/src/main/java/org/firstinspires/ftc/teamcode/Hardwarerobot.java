@@ -32,12 +32,14 @@ public class Hardwarerobot
     public static double PIXELHOLDERROTATOR_INIT_POS = 0.025;
     public static double PIXELHOLDERROTATOR_DEPOSIT_POS = 0.7;
     public static double PIXELHOLDERROTATOR_AUTO_POS = 0.8;
+    public static double PIXELHOLDERROTATOR_REDCENTER_POS = .88;
 
     public static double AUTO_CLOSED_POS = 0.5;
     public static double AUTO_OPEN_POS = 0;
 
     public static double WRIST_DEPOSIT_POS = 0.15;
-    public static double WRIST_STORE_POS = 0;
+    public static double WRIST_STORE_POS = 0.01;
+    public static double WRIST_REDCENTER_POS = .23;
 
     public static double MOSAIC_DEPOSIT_POS = .2;
     public static double MOSAIC_STORE_POS = 0;

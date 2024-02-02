@@ -55,16 +55,16 @@ public class Auto_Red_far extends LinearOpMode {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(pipeline);
         webcam.setMillisecondsPermissionTimeout(2500);
-//        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-//            @Override
-//            public void onOpened() {
-//                webcam.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT); //change the image size to 1920 x 1080
-//            }
-//
-//            @Override
-//            public void onError(int errorCode) {
-//            }
-//        });
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
 
         robot.viperSlideLift.setDirection(DcMotor.Direction.REVERSE);
         robot.viperSlideLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -76,7 +76,7 @@ public class Auto_Red_far extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addData("Realtime analysis", pipeline.getPropPosition());
             telemetry.update();
-            sleep(50);
+            sleep(20);
 
         }
         conePosition = pipeline.getPropPosition();
@@ -86,8 +86,8 @@ public class Auto_Red_far extends LinearOpMode {
         if (!isStopRequested())
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
-        sleep(1000);
-        conePosition = ContoursPixelLocatorRED.ConePosition.LEFT;
+        sleep(100);
+        //conePosition = ContoursPixelLocatorRED.ConePosition.CENTER;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
@@ -102,8 +102,8 @@ public class Auto_Red_far extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(50, -70, Math.toRadians(270)))
                 .addDisplacementMarker(123, this::raise)
                 .addDisplacementMarker(123, this::stopEating)
-                .lineToSplineHeading(new Pose2d(33, -70, Math.toRadians(270)))
-                .lineToSplineHeading(new Pose2d(33, -87, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(30, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(30, -87, Math.toRadians(270)))
                 .addDisplacementMarker(this::retract)
                 .waitSeconds(.2)
                 .lineToSplineHeading(new Pose2d(30, -79, Math.toRadians(270)))
@@ -112,14 +112,14 @@ public class Auto_Red_far extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(49, 24, Math.toRadians(270)))
                 .back(2)
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.2)
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.moreEating())
                 .waitSeconds(.2)
                 .forward(6)
-                .waitSeconds(.3)
+                .waitSeconds(.2)
                 .back(5)
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.5)
+                .waitSeconds(.2)
                 .addTemporalMarker(() -> this.moreEating())
                 .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
                 .addTemporalMarker(() -> this.raise())
@@ -131,11 +131,88 @@ public class Auto_Red_far extends LinearOpMode {
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(25, 2, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(45, 2, Math.toRadians(-90)))
+                .addDisplacementMarker(45, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .addDisplacementMarker(50, () -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
+                .back(7)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.2)
+                .lineToSplineHeading(new Pose2d(50, -70, Math.toRadians(270)))
+                .addDisplacementMarker(123, this::raise)
+                .addDisplacementMarker(123, this::stopEating)
+                .lineToSplineHeading(new Pose2d(23, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(23, -87, Math.toRadians(270)))
+                .addDisplacementMarker(this::retract)
+                .waitSeconds(.2)
+                .lineToSplineHeading(new Pose2d(23, -79, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 24, Math.toRadians(270)))
+                .back(2)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.2)
+                .forward(6)
+                .waitSeconds(.2)
+                .back(5)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .addTemporalMarker(() -> this.raise())
+                .addTemporalMarker(() -> this.stopEating())
+                .lineToSplineHeading(new Pose2d(20, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(18, -87, Math.toRadians(270)))
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.retract())
+                .waitSeconds(1)
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(25, -2, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(25, 2, Math.toRadians(0)))
+                .strafeRight(6)
+                .addDisplacementMarker(30, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS ))
+                .back(5)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(50, -70, Math.toRadians(270)))
+                .addDisplacementMarker(123, this::raise)
+                .addDisplacementMarker(123, this::stopEating)
+                .lineToSplineHeading(new Pose2d(18, -70, Math.toRadians(270)))
+                .waitSeconds(.2)
+                .lineToSplineHeading(new Pose2d(18, -88, Math.toRadians(270)))
+                .waitSeconds(.2)
+                .addDisplacementMarker(this::retract)
+                .waitSeconds(.2)
+                .lineToSplineHeading(new Pose2d(18, -79, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(49, 24, Math.toRadians(270)))
+                .back(1)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.1)
+                .forward(5)
+                .back(4)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
+                .addTemporalMarker(() -> this.raise())
+                .addTemporalMarker(() -> this.stopEating())
+                .lineToSplineHeading(new Pose2d(28, -70, Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(28, -87, Math.toRadians(270)))
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.retract())
+                .waitSeconds(1)
                 .build();
 
         switch (conePosition) {

@@ -76,7 +76,7 @@ public class Hardwarerobot
         viperSlideLifttwo.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.FORWARD);
 
-        pixelBox.setDirection(Servo.Direction.FORWARD);
+        pixelBox.setDirection(Servo.Direction.REVERSE);
         pixelHolderRotator.setDirection(Servo.Direction.REVERSE);
         droneLauncher.setDirection(Servo.Direction.FORWARD);
         auto.setDirection(Servo.Direction.FORWARD);

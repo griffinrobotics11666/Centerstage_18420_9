@@ -40,6 +40,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import java.util.ArrayList;
 
@@ -177,16 +178,11 @@ public class AprilTagDemo extends LinearOpMode
                     for(AprilTagDetection detection : detections)
                     {
                         Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
-                        packet.addLine(String.format("\nDetected tag ID=%d", detection.id));
-                        packet.addLine(String.format("Translation X: %.2f feet", (detection.pose.x*FEET_PER_METER*2.593)-0.6827));
-                        packet.addLine(String.format("Translation Y: %.2f feet", (detection.pose.y*FEET_PER_METER*2.593)-0.6827));
-                        packet.addLine(String.format("Translation Z: %.2f feet", (detection.pose.z*FEET_PER_METER*2.593)-0.6827));
                         packet.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
                         packet.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
                         packet.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
-                        getDistanceFromAprilTagZ(4, detections);
-                        packet.addLine(String.format("getDistanceFromAprilTagZ: %.2f", getDistanceFromAprilTagZ(4, detections)));
-                        packet.addLine(String.format("getDistanceFromAprilTagX: %.2f", getDistanceFromAprilTagX(4, detections)));
+                        packet.addLine(String.format("Red Pose: " + getPoseFromAprilTagRed(detections).toString()));
+                        packet.addLine(String.format("Blue Pose: " + getPoseFromAprilTagBlue(detections).toString()));
                     }
                 }
             }
@@ -204,6 +200,61 @@ public class AprilTagDemo extends LinearOpMode
             }
             return distance;
         }
+    public double getCameraZDistanceFromAprilTag(int id, ArrayList<AprilTagDetection> detections) {
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) - 0.6827);
+            }
+        }
+        return distance;
+    }
+    public double getRobotZDistanceFromAprilTagRed(ArrayList<AprilTagDetection> detections) {
+        int id = 5;
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                //accounts for ~7 inch distance from camera to center of robot, see dif in y intercept
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) + 6.3173);
+            }
+        }
+        return distance;
+    }
+    public double getRobotZDistanceFromAprilTagBlue(ArrayList<AprilTagDetection> detections) {
+        int id = 2;
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                //accounts for ~7 inch distance from camera to center of robot, see dif in y intercept
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) + 6.3173);
+            }
+        }
+        return distance;
+    }
+    public double getRobotRotationFromAprilTagRed(ArrayList<AprilTagDetection> detections) {
+        int id = 5;
+        double angle = 0.00;
+        double x = getDistanceFromAprilTagX(id, detections);
+        double z = getRobotZDistanceFromAprilTagRed(detections);
+        for (AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                angle = (Math.atan(x/(z+7)));
+            }
+        }
+        return angle;
+    }
+    public double getRobotRotationFromAprilTagBlue(ArrayList<AprilTagDetection> detections) {
+        int id = 2;
+        double angle = 0.00;
+        double x = getDistanceFromAprilTagX(id, detections);
+        double z = getRobotZDistanceFromAprilTagBlue(detections);
+        for (AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                angle = (Math.atan(x/(z+7)));
+            }
+        }
+        return angle;
+    }
     public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
         double distance = 0.00;
         for(AprilTagDetection detection : detections) {
@@ -213,6 +264,19 @@ public class AprilTagDemo extends LinearOpMode
         }
         return distance;
     }
-
+    public Pose2d getPoseFromAprilTagRed(ArrayList<AprilTagDetection> detections){
+        Pose2d pose = new Pose2d(0,0,0);
+        pose = new Pose2d(23+getDistanceFromAprilTagX(5, detections),
+                -95+getRobotZDistanceFromAprilTagRed(detections),
+                Math.toRadians(-90));
+        return pose;
+    }
+    public Pose2d getPoseFromAprilTagBlue(ArrayList<AprilTagDetection> detections){
+        Pose2d pose = new Pose2d(0,0,0);
+        pose = new Pose2d(23-getDistanceFromAprilTagX(5, detections),
+                95-getRobotZDistanceFromAprilTagRed(detections),
+                Math.toRadians(-90));
+        return pose;
+    }
     }
 

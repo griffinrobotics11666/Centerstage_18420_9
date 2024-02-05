@@ -87,36 +87,40 @@ public class Auto_Blue_Close extends LinearOpMode {
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(27,5,Math.toRadians(90)))
-                .addDisplacementMarker(27, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .lineToSplineHeading(new Pose2d(20,6,Math.toRadians(90)))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .waitSeconds(.5)
                 .addDisplacementMarker(this::deposit)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(20, 45, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(19, 40, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(5, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(1, 35, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(28,0,Math.toRadians(90)))
-                .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .addDisplacementMarker(this::deposit)
+                .addTemporalMarker( () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .waitSeconds(.5)
+                .addDisplacementMarker(this::depositTakeTwo)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(25,45, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(25,40, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(5,35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(1,35, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(28,-3,Math.toRadians(0)))
-                .addDisplacementMarker(28, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(27,-2,Math.toRadians(0)))
+                .strafeRight(2)
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .waitSeconds(.5)
+                .addDisplacementMarker(this::depositTakeTwo)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(31, 45, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(31, 40, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .back(5)
-                .lineToSplineHeading(new Pose2d(5, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(1, 35, Math.toRadians(90)))
                 .build();
 
         switch (conePosition) {
@@ -146,11 +150,16 @@ public class Auto_Blue_Close extends LinearOpMode {
     }
 
     public void deposit() {
-        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+        robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
     }
-
+    public void depositTakeTwo() {
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_REDCENTER_POS);
+        robot.wrist.setPosition(robot.WRIST_REDCENTER_POS);
+    }
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+        robot.wrist.setPosition(robot.WRIST_STORE_POS);
     }
 
 

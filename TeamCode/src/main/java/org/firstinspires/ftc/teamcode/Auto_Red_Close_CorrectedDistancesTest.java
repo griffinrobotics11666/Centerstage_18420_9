@@ -28,7 +28,6 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
     double cx = 319.495;
     double cy = 242.502;
     double tagsize = 0.166;
-
     OpenCvWebcam webcam; //add other code to get the camera set up
     Hardwarerobot robot = new Hardwarerobot();
     private ContoursPixelLocatorRED pipeline = new ContoursPixelLocatorRED(telemetry); //update this for new pipeline
@@ -180,19 +179,16 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(24, 0, Math.toRadians(-90)))
                 .waitSeconds(1)
                 .lineToLinearHeading(new Pose2d(24,-72, Math.toRadians(-90)))
-                .waitSeconds(5)
+                .waitSeconds(2)
                 .addTemporalMarker(()->detections = aprilTagDetectionPipeline.getDetectionsUpdate())
                 .addTemporalMarker(()->telemetry.addData("x: ",getDistanceFromAprilTagX(5,detections)))
-                .addTemporalMarker(()->telemetry.addData("z: ", getDistanceFromAprilTagZ(5,detections)))
+                .addTemporalMarker(()->telemetry.addData("z: ", getRobotZDistanceFromAprilTagRed(detections)))
                 .addTemporalMarker(()->telemetry.update())
-                .waitSeconds(5)
-                .addTemporalMarker(()->drive.setPoseEstimate(
-                        new Pose2d(23+getDistanceFromAprilTagX(5,detections),
-                                -95+getDistanceFromAprilTagZ(5,detections),
-                                Math.toRadians(-90))
-                ))
-                .strafeTo(new Vector2d(24,-84))
-                .waitSeconds(10)
+                .waitSeconds(2)
+                .addTemporalMarker(()->drive.setPoseEstimate(getPoseFromAprilTagRed(5, detections)))
+                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(24,-84))
+                .waitSeconds(2)
                 .build();
 
 
@@ -233,7 +229,7 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
     }
-    public double getDistanceFromAprilTagZ(int id, ArrayList<AprilTagDetection> detections) {
+    public double getCameraZDistanceFromAprilTag(int id, ArrayList<AprilTagDetection> detections) {
         double distance = 0.00;
         for(AprilTagDetection detection : detections) {
             if (detection.id == id) {
@@ -241,6 +237,52 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
             }
         }
         return distance;
+    }
+    public double getRobotZDistanceFromAprilTagRed(ArrayList<AprilTagDetection> detections) {
+        int id = 5;
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                //accounts for ~7 inch distance from camera to center of robot, see dif in y intercept
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) + 6.3173);
+            }
+        }
+        return distance;
+    }
+    public double getRobotZDistanceFromAprilTagBlue(ArrayList<AprilTagDetection> detections) {
+        int id = 2;
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                //accounts for ~7 inch distance from camera to center of robot, see dif in y intercept
+                distance = ((detection.pose.z * FEET_PER_METER * 2.593) + 6.3173);
+            }
+        }
+        return distance;
+    }
+    public double getRobotRotationFromAprilTagRed(ArrayList<AprilTagDetection> detections) {
+        int id = 5;
+        double angle = 0.00;
+        double x = getDistanceFromAprilTagX(id, detections);
+        double z = getRobotZDistanceFromAprilTagRed(detections);
+        for (AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                angle = (Math.atan(x/(z+7)));
+            }
+        }
+        return angle;
+    }
+    public double getRobotRotationFromAprilTagBlue(ArrayList<AprilTagDetection> detections) {
+        int id = 2;
+        double angle = 0.00;
+        double x = getDistanceFromAprilTagX(id, detections);
+        double z = getRobotZDistanceFromAprilTagBlue(detections);
+        for (AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                angle = (Math.atan(x/(z+7)));
+            }
+        }
+        return angle;
     }
     public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
         double distance = 0.00;
@@ -251,7 +293,19 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
         }
         return distance;
     }
-
-
+    public Pose2d getPoseFromAprilTagRed(int id, ArrayList<AprilTagDetection> detections){
+        Pose2d pose = new Pose2d(0,0,0);
+            pose = new Pose2d(23+getDistanceFromAprilTagX(5, detections),
+                    -95+getRobotZDistanceFromAprilTagRed(detections),
+                    Math.toRadians(-90));
+        return pose;
+    }
+    public Pose2d getPoseFromAprilTagBlue(int id, ArrayList<AprilTagDetection> detections){
+        Pose2d pose = new Pose2d(0,0,0);
+            pose = new Pose2d(23-getDistanceFromAprilTagX(5, detections),
+                    95-getRobotZDistanceFromAprilTagRed(detections),
+                    Math.toRadians(-90));
+        return pose;
+    }
 }
 

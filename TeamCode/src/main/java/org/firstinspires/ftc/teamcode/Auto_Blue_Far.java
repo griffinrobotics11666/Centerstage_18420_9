@@ -89,27 +89,29 @@ public class Auto_Blue_Far extends LinearOpMode {
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(25,2, Math.toRadians(90)))
                 .forward(7)
-                .addDisplacementMarker(27, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .strafeLeft(2)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(27,0, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50,0, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
                 .addDisplacementMarker(this::deposit)
                 .lineToSplineHeading(new Pose2d(25,80, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(25,97, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(25,95, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d (27, 0, Math.toRadians(90)))
-                .addDisplacementMarker(27, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .back(5)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(50,-6, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
-                .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(32,80, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(32, 95, Math.toRadians(90)))
+                .addDisplacementMarker(this::depositTakeTwo)
+                .lineToSplineHeading(new Pose2d(32,75, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(32, 88, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .lineToSplineHeading(new Pose2d(32,80, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
@@ -117,12 +119,13 @@ public class Auto_Blue_Far extends LinearOpMode {
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d (26, -1, Math.toRadians(0)))
-                .addDisplacementMarker(26, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .lineToSplineHeading(new Pose2d(55,0, Math.toRadians(90)))
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(37, 80, Math.toRadians(90)))
                 .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(37,90, Math.toRadians(90)))
-                .forward(5)
+                .lineToSplineHeading(new Pose2d(37,87, Math.toRadians(90)))
+                .forward(8)
                 .addDisplacementMarker(this::retract)
                 .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
                 .build();
@@ -156,11 +159,16 @@ public class Auto_Blue_Far extends LinearOpMode {
     }
 
     public void deposit() {
-        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
+        robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
     }
-
+    public void depositTakeTwo() {
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_REDCENTER_POS);
+        robot.wrist.setPosition(robot.WRIST_REDCENTER_POS);
+    }
     public void retract(){
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
+        robot.wrist.setPosition(robot.WRIST_STORE_POS);
     }
 
 

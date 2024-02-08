@@ -33,6 +33,7 @@ public class DriverControl2024 extends OpMode {
     public static double PINCHERRIGHTOPEN = 0.1;
     public static double PINCHERRIGHTCLOSE = 0.5;
     public static double outTakeClosed = 0;
+    public static double outTakeMiddle = 0.075;
     public static double getOutTakeOpen = .15;
 
     boolean lastMovement1 = false; boolean currentMovement1 = false;
@@ -43,6 +44,9 @@ public class DriverControl2024 extends OpMode {
 
     boolean lastMovement3 = false; boolean currentMovement3 = false;
     boolean downPosition3 = true;
+
+    boolean lastMovement4 = false; boolean currentMovement4 = false;
+    boolean downPosition4 = true;
 
     Hardwarerobot robot = new Hardwarerobot();
     HardwareMap hwMap = null;
@@ -130,11 +134,19 @@ public class DriverControl2024 extends OpMode {
             }
         }
 
+
         if(gamepad2.left_bumper == true){
          robot.pixelBox.setPosition(getOutTakeOpen);
+        } else if(gamepad2.right_bumper == true){
+            robot.pixelBox.setPosition(outTakeMiddle);
         } else {
             robot.pixelBox.setPosition(outTakeClosed);
         }
+
+
+
+
+
 
         lastMovement1 = currentMovement1;
         currentMovement1 = gamepad2.y;

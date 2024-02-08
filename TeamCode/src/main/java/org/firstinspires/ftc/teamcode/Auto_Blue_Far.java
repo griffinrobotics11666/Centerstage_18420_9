@@ -83,7 +83,7 @@ public class Auto_Blue_Far extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(1000);
-        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
+        conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
@@ -92,7 +92,23 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .strafeLeft(2)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(27,0, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(49,-20, Math.toRadians(90)))
+                .back(2)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.moreEating())
+                .waitSeconds(.2)
+                .lineToSplineHeading(new Pose2d(50, 70, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addDisplacementMarker(123, this::raise)
+                .addDisplacementMarker(123, this::stopEating)
+                .lineToSplineHeading(new Pose2d(17, 87, Math.toRadians(90)))
+                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
+                .waitSeconds(.5)
+                .addDisplacementMarker(this::retract)
+                .waitSeconds(.2)
+                /*
                 .lineToSplineHeading(new Pose2d(50,0, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
                 .addDisplacementMarker(this::deposit)
@@ -100,6 +116,8 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(25,95, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
                 .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+
+                 */
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
@@ -109,7 +127,7 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .lineToSplineHeading(new Pose2d(50,-6, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
-                .addDisplacementMarker(this::depositTakeTwo)
+                .addDisplacementMarker(this::deposit)
                 .lineToSplineHeading(new Pose2d(32,75, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(32, 88, Math.toRadians(90)))
                 .addDisplacementMarker(this::retract)
@@ -126,7 +144,7 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .addDisplacementMarker(this::deposit)
                 .lineToSplineHeading(new Pose2d(37,87, Math.toRadians(90)))
                 .forward(8)
-                .addDisplacementMarker(this::retract)
+                .addDisplacementMarker(() -> this.retract())
                 .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
                 .build();
 
@@ -158,19 +176,32 @@ public class Auto_Blue_Far extends LinearOpMode {
 
     }
 
-    public void deposit() {
+    public void raise() {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
         robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
     }
-    public void depositTakeTwo() {
+    public void deposit() {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_REDCENTER_POS);
         robot.wrist.setPosition(robot.WRIST_REDCENTER_POS);
     }
     public void retract(){
-        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
         robot.wrist.setPosition(robot.WRIST_STORE_POS);
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
     }
 
+    public void eat() {
+        robot.intake.setPower(1);
+        robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTCLOSE);
+        robot.pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTCLOSE);
+    }
+    public void moreEating() {
+        robot.intake.setPower(1);
+        robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTOPEN);
+        robot.pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTOPEN);
+    }
 
+    public void stopEating() {
+        robot.intake.setPower(0);
+    }
 }
 

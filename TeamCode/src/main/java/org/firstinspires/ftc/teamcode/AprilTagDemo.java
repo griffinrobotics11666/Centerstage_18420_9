@@ -226,7 +226,7 @@ public class AprilTagDemo extends LinearOpMode
         double distance = 0.00;
         for(AprilTagDetection detection : detections) {
             if (detection.id == id) {
-                distance = ((detection.pose.x * FEET_PER_METER * 2.374601021385254)-3.25);
+                distance = ((detection.pose.x * FEET_PER_METER * 2.374601021385254*1.603)-3.25);
             }
         }
         return distance;

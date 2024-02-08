@@ -52,7 +52,7 @@ public class AprilTagDemo extends LinearOpMode
     FtcDashboard dashboard;
     TelemetryPacket packet = new TelemetryPacket();
     static final double FEET_PER_METER = 3.28084;
-
+    //TODO: tweak the april tag distance formulas.
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -273,8 +273,8 @@ public class AprilTagDemo extends LinearOpMode
     }
     public Pose2d getPoseFromAprilTagBlue(ArrayList<AprilTagDetection> detections){
         Pose2d pose = new Pose2d(0,0,0);
-        pose = new Pose2d(23-getDistanceFromAprilTagX(5, detections),
-                95-getRobotZDistanceFromAprilTagRed(detections),
+        pose = new Pose2d(23-getDistanceFromAprilTagX(2, detections),
+                95-getRobotZDistanceFromAprilTagBlue(detections),
                 Math.toRadians(-90));
         return pose;
     }

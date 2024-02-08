@@ -302,7 +302,7 @@ public class Auto_Red_Close_CorrectedDistancesTest extends LinearOpMode {
     }
     public Pose2d getPoseFromAprilTagBlue(int id, ArrayList<AprilTagDetection> detections){
         Pose2d pose = new Pose2d(0,0,0);
-            pose = new Pose2d(23-getDistanceFromAprilTagX(5, detections),
+            pose = new Pose2d(23-getDistanceFromAprilTagX(2, detections),
                     95-getRobotZDistanceFromAprilTagRed(detections),
                     Math.toRadians(-90));
         return pose;

@@ -118,7 +118,6 @@ public class DriverControl2024 extends OpMode {
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFrontPower, rightFrontPower);
         telemetry.addData("Status", "BRENNAN AND EGG MAN YOU BETTER NOT GET ANY PENALTIES OR ELSE . . .");
 
-
         if (Math.abs(gamepad2.left_trigger - gamepad2.right_trigger) > .1) {
             robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
         }

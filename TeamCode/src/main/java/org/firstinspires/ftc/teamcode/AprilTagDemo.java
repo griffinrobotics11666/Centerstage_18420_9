@@ -191,15 +191,6 @@ public class AprilTagDemo extends LinearOpMode
             }
             //sleep(20);
         }
-        public double getDistanceFromAprilTagZ(int id, ArrayList<AprilTagDetection> detections) {
-            double distance = 0.00;
-            for(AprilTagDetection detection : detections) {
-                if (detection.id == id) {
-                    distance = ((detection.pose.z * FEET_PER_METER * 2.593) - 0.6827);
-                }
-            }
-            return distance;
-        }
     public double getCameraZDistanceFromAprilTag(int id, ArrayList<AprilTagDetection> detections) {
         double distance = 0.00;
         for(AprilTagDetection detection : detections) {
@@ -231,6 +222,15 @@ public class AprilTagDemo extends LinearOpMode
         }
         return distance;
     }
+    public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
+        double distance = 0.00;
+        for(AprilTagDetection detection : detections) {
+            if (detection.id == id) {
+                distance = ((detection.pose.x * FEET_PER_METER * 2.374601021385254)-3.25);
+            }
+        }
+        return distance;
+    }
     public double getRobotRotationFromAprilTagRed(ArrayList<AprilTagDetection> detections) {
         int id = 5;
         double angle = 0.00;
@@ -255,26 +255,17 @@ public class AprilTagDemo extends LinearOpMode
         }
         return angle;
     }
-    public double getDistanceFromAprilTagX(int id, ArrayList<AprilTagDetection> detections) {
-        double distance = 0.00;
-        for(AprilTagDetection detection : detections) {
-            if (detection.id == id) {
-                distance = ((detection.pose.x * FEET_PER_METER * 1.395)-3.25);
-            }
-        }
-        return distance;
-    }
     public Pose2d getPoseFromAprilTagRed(ArrayList<AprilTagDetection> detections){
         Pose2d pose = new Pose2d(0,0,0);
-        pose = new Pose2d(23+getDistanceFromAprilTagX(5, detections),
-                -95+getRobotZDistanceFromAprilTagRed(detections),
+        pose = new Pose2d(23-getDistanceFromAprilTagX(5, detections)+3.932,
+                -95+getRobotZDistanceFromAprilTagRed(detections)-0.245,
                 Math.toRadians(-90));
         return pose;
     }
     public Pose2d getPoseFromAprilTagBlue(ArrayList<AprilTagDetection> detections){
         Pose2d pose = new Pose2d(0,0,0);
-        pose = new Pose2d(23-getDistanceFromAprilTagX(2, detections),
-                95-getRobotZDistanceFromAprilTagBlue(detections),
+        pose = new Pose2d(23-getDistanceFromAprilTagX(2, detections)-4.781,
+                95-getRobotZDistanceFromAprilTagBlue(detections)+0.765,
                 Math.toRadians(-90));
         return pose;
     }

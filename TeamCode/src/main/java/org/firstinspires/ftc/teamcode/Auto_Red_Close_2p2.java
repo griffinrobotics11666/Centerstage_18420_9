@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.DriverControl2024.outTakeClosed;
+import static org.firstinspires.ftc.teamcode.DriverControl2024.outTakeMiddle;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -92,8 +95,10 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .addDisplacementMarker(this::raise)
                 .lineToSplineHeading(new Pose2d(32, -35, Math.toRadians(270)))
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .forward(5)
                 .waitSeconds(.5)
+                .addTemporalMarker(() -> this.drop())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.close())
                 .addDisplacementMarker( this::retract)
                 .back(5)
                 // sussy wussy stuff here
@@ -119,7 +124,7 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .addTemporalMarker(() -> this.stopEating())
                 .lineToSplineHeading(new Pose2d(25, -35, Math.toRadians(270)))
                 .waitSeconds(.5)
-                .forward(5)
+                .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
@@ -133,8 +138,9 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(25, -35, Math.toRadians(270)))
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .waitSeconds(.5)
-                .forward(5)
+                .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
+                .addTemporalMarker(() -> this.close())
                 .addDisplacementMarker( this::retract)
                 .back(5)
                 // sussy wussy stuff here
@@ -160,7 +166,7 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .addTemporalMarker(() -> this.stopEating())
                 .lineToSplineHeading(new Pose2d(25, -35, Math.toRadians(270)))
                 .waitSeconds(.5)
-                .forward(5)
+                .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
@@ -175,8 +181,10 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .addDisplacementMarker(this::raise)
                 .lineToSplineHeading(new Pose2d(19, -35, Math.toRadians(270)))
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .waitSeconds(.25)
-                .forward(5)
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.drop())
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> this.close())
                 .addDisplacementMarker(this::retract)
                 .back(5)
                 // sussy wussy stuff here
@@ -202,7 +210,7 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
                 .addTemporalMarker(() -> this.stopEating())
                 .lineToSplineHeading(new Pose2d(25, -35, Math.toRadians(270)))
                 .waitSeconds(.5)
-                .forward(5)
+                .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
                 .addDisplacementMarker( this::retract)
                 .back(5)
@@ -264,5 +272,7 @@ public class Auto_Red_Close_2p2 extends LinearOpMode {
     public void stopEating() {
         robot.intake.setPower(0);
     }
+    public void drop() {robot.pixelBox.setPosition(outTakeMiddle); }
+    public void close() {robot.pixelBox.setPosition(outTakeClosed);}
 }
 

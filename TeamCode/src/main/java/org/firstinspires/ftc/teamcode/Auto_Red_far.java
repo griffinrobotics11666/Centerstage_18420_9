@@ -108,7 +108,6 @@ public class Auto_Red_far extends LinearOpMode {
                 .waitSeconds(.2)
                 .addDisplacementMarker(this::retract)
                 .waitSeconds(.2)
-
                 .lineToSplineHeading(new Pose2d(29, -79, Math.toRadians(270)))
                 .lineToSplineHeading(new Pose2d(50,-70, Math.toRadians(270)))
                 .lineToSplineHeading(new Pose2d(49, 20, Math.toRadians(270)))

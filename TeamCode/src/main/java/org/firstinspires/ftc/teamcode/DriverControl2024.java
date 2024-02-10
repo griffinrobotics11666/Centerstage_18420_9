@@ -32,8 +32,8 @@ public class DriverControl2024 extends OpMode {
     public static double PINCHERLEFTCLOSE = 0.5;
     public static double PINCHERRIGHTOPEN = 0.1;
     public static double PINCHERRIGHTCLOSE = 0.5;
-    public static double outTakeClosed = 0;
-    public static double outTakeMiddle = 0.075;
+    public static double outTakeClosed = 0.0;
+    public static double outTakeMiddle = 0.09;
     public static double getOutTakeOpen = .15;
 
     boolean lastMovement1 = false; boolean currentMovement1 = false;

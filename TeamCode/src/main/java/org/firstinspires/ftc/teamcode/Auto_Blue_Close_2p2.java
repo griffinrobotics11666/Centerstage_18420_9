@@ -85,15 +85,15 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
         if (!isStopRequested())
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
-        sleep(1000);
+        sleep(50);
         //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(20,6,Math.toRadians(90)))
-                .addDisplacementMarker(20, () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .addDisplacementMarker(this::raise)
-                .lineToSplineHeading(new Pose2d(19, 35, Math.toRadians(90)))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .addDisplacementMarker(this::depositTakeTwo)
+                .lineToSplineHeading(new Pose2d(18, 42, Math.toRadians(90)))
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> this.drop())
@@ -102,10 +102,9 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
                 .addDisplacementMarker( this::retract)
                 .back(5)
                 // sussy wussy stuff here
-                .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(2, -48, Math.toRadians(90)))
-                //.lineToSplineHeading(new Pose2d(24, 48, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(24, -72, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(3, 5, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(5, -48, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(30, -71, Math.toRadians(90)))
                 //suck up pixels here
                 .addTemporalMarker(() -> this.eat())
                 .waitSeconds(.5)
@@ -115,40 +114,46 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
                 .waitSeconds(.2)
                 .back(5)
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.2)
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.moreEating())
                 //does it suck
-                .lineToSplineHeading(new Pose2d(2, -48, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
-                .addTemporalMarker(() -> this.raise())
+                .lineToSplineHeading(new Pose2d(3, -48, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(5, 5, Math.toRadians(90)))
+                .addTemporalMarker(() -> this.deposit())
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.stopEating())
-                .lineToSplineHeading(new Pose2d(25, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(25, 42, Math.toRadians(90)))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
+                .back(1)
+                .waitSeconds(.2)
                 .addDisplacementMarker( this::retract)
                 .back(5)
                 .lineToSplineHeading(new Pose2d(5, 40, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(28,0,Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(28,2,Math.toRadians(90)))
                 .addTemporalMarker( () -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .waitSeconds(.5)
-                .addDisplacementMarker(this::depositTakeTwo)
+                .addDisplacementMarker(this::deposit)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(25,35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(25,38, Math.toRadians(90)))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
-                .addTemporalMarker(() -> this.close())
+                .back(1)
+                .waitSeconds(.2)
                 .addDisplacementMarker( this::retract)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.close())
                 .back(5)
                 // sussy wussy stuff here
                 .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(2, -48, Math.toRadians(90)))
                 //.lineToSplineHeading(new Pose2d(24, 48, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(24, -72, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(26, -71, Math.toRadians(90)))
                 //suck up pixels here
                 .addTemporalMarker(() -> this.eat())
                 .waitSeconds(.5)
@@ -156,37 +161,41 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
                 .waitSeconds(.2)
                 .forward(6)
                 .waitSeconds(.2)
-                .back(5)
+                .back(6)
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.2)
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.moreEating())
                 //does it suck
                 .lineToSplineHeading(new Pose2d(2, -48, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
                 .addTemporalMarker(() -> this.raise())
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.stopEating())
-                .lineToSplineHeading(new Pose2d(25, 35, Math.toRadians(90)))
-                .waitSeconds(.5)
+                .lineToSplineHeading(new Pose2d(21, 42, Math.toRadians(90)))
+                .waitSeconds(.1)
                 .addTemporalMarker(() -> this.drop())
-                .waitSeconds(.5)
+                .waitSeconds(2)
+                .back(1)
+                .waitSeconds(.2)
+                .back(4)
                 .addDisplacementMarker( this::retract)
-                .back(5)
                 .lineToSplineHeading(new Pose2d(5, 40, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(27,-2,Math.toRadians(0)))
-                .strafeRight(2)
+                .lineToSplineHeading(new Pose2d(27,0,Math.toRadians(0)))
+                .strafeRight(4)
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .waitSeconds(.5)
-                .addDisplacementMarker(this::depositTakeTwo)
+                .addDisplacementMarker(this::deposit)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(31, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(34, 37, Math.toRadians(90)))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
-                .addTemporalMarker(() -> this.close())
                 .addDisplacementMarker( this::retract)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.close())
                 .back(5)
                 // sussy wussy stuff here
                 .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
@@ -195,21 +204,22 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(24, -72, Math.toRadians(90)))
                 //suck up pixels here
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.5)
+                .waitSeconds(.7)
                 .addTemporalMarker(() -> this.moreEating())
                 .waitSeconds(.2)
                 .forward(6)
                 .waitSeconds(.2)
-                .back(5)
+                .back(6)
                 .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.2)
+                .waitSeconds(1)
                 .addTemporalMarker(() -> this.moreEating())
                 //does it suck
                 .lineToSplineHeading(new Pose2d(2, -48, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(2, 5, Math.toRadians(90)))
                 .addTemporalMarker(() -> this.raise())
+                .waitSeconds(.5)
                 .addTemporalMarker(() -> this.stopEating())
-                .lineToSplineHeading(new Pose2d(25, 35, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(22, 41.5, Math.toRadians(90)))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> this.drop())
                 .waitSeconds(.5)
@@ -243,7 +253,6 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
             }
 
     }
-
     public void deposit() {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
         robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
@@ -256,12 +265,10 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
         robot.wrist.setPosition(robot.WRIST_STORE_POS);
     }
-
     public void raise() {
-        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_AUTO_POS);
-        robot.wrist.setPosition(robot.WRIST_DEPOSIT_POS);
+        robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_DEPOSIT_POS);
+        robot.wrist.setPosition(robot.WRIST_STORE_POS);
     }
-
     public void eat() {
         robot.intake.setPower(1);
         robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTCLOSE);
@@ -272,7 +279,6 @@ public class Auto_Blue_Close_2p2 extends LinearOpMode {
         robot.pinchertheleft.setPosition(DriverControl2024.PINCHERLEFTOPEN);
         robot.pinchertheright.setPosition(DriverControl2024.PINCHERRIGHTOPEN);
     }
-
     public void stopEating() {
         robot.intake.setPower(0);
     }

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.DriverControl2024.outTakeClosed;
+import static org.firstinspires.ftc.teamcode.DriverControl2024.outTakeMiddle;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -79,21 +82,20 @@ public class Auto_Blue_Close extends LinearOpMode {
         telemetry.addData("Snapshot post-START analysis", conePosition);
         telemetry.update();
 
-        if (!isStopRequested())
-            conePosition = pipeline.getPropPosition();
-        webcam.closeCameraDevice();
-        sleep(1000);
-        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
-        robot.auto.setPosition(robot.AUTO_CLOSED_POS);
-
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(20,6,Math.toRadians(90)))
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .strafeLeft(2)
                 .waitSeconds(.5)
                 .addDisplacementMarker(this::deposit)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(19, 40, Math.toRadians(90)))
-                .addDisplacementMarker(this::retract)
+                .lineToSplineHeading(new Pose2d(19, 41, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> drop())
+                .waitSeconds(.5)
+                .addTemporalMarker(this::retract)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> close())
                 .back(5)
                 .lineToSplineHeading(new Pose2d(1, 35, Math.toRadians(90)))
                 .build();
@@ -104,24 +106,41 @@ public class Auto_Blue_Close extends LinearOpMode {
                 .waitSeconds(.5)
                 .addDisplacementMarker(this::depositTakeTwo)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(25,40, Math.toRadians(90)))
-                .addDisplacementMarker(this::retract)
+                .lineToSplineHeading(new Pose2d(25,41, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> drop())
+                .waitSeconds(.5)
+                .addTemporalMarker(this::retract)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> close())
                 .back(5)
                 .lineToSplineHeading(new Pose2d(1,35, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(6,6,Math.toRadians(0)))
                 .lineToSplineHeading(new Pose2d(27,-2,Math.toRadians(0)))
-                .strafeRight(2)
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .waitSeconds(.5)
                 .addDisplacementMarker(this::depositTakeTwo)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(31, 40, Math.toRadians(90)))
-                .addDisplacementMarker(this::retract)
+                .lineToSplineHeading(new Pose2d(32, 41, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> drop())
+                .waitSeconds(.5)
+                .addTemporalMarker(this::retract)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> close())
                 .back(5)
                 .lineToSplineHeading(new Pose2d(1, 35, Math.toRadians(90)))
                 .build();
+
+        if (!isStopRequested())
+            conePosition = pipeline.getPropPosition();
+        webcam.closeCameraDevice();
+        sleep(500);
+        //conePosition = ContoursPixelLocatorBLUE.ConePosition.RIGHT;
+        robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         switch (conePosition) {
 
@@ -161,7 +180,8 @@ public class Auto_Blue_Close extends LinearOpMode {
         robot.pixelHolderRotator.setPosition(robot.PIXELHOLDERROTATOR_STORE_POS);
         robot.wrist.setPosition(robot.WRIST_STORE_POS);
     }
-
+    public void drop() {robot.pixelBox.setPosition(outTakeMiddle); }
+    public void close() {robot.pixelBox.setPosition(outTakeClosed);}
 
 }
 

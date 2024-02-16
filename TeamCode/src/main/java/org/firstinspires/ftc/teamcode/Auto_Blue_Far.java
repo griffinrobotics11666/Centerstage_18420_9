@@ -83,16 +83,17 @@ public class Auto_Blue_Far extends LinearOpMode {
             conePosition = pipeline.getPropPosition();
         webcam.closeCameraDevice();
         sleep(50);
-        conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT;
+        //conePosition = ContoursPixelLocatorBLUE.ConePosition.LEFT;
         robot.auto.setPosition(robot.AUTO_CLOSED_POS);
 
         TrajectorySequence trajSeq_left = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(25,2, Math.toRadians(90)))
                 .forward(7)
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
-                .strafeLeft(4)
-                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .addDisplacementMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
+                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
+                .strafeLeft(2)
                 // stack
                 .lineToSplineHeading(new Pose2d(49,-12, Math.toRadians(90)))
                 .lineToSplineHeading(new Pose2d(49,-22, Math.toRadians(90)))
@@ -103,52 +104,86 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(46, 70, Math.toRadians(90)))
                 //.waitSeconds(.5)
                 .addTemporalMarker(() -> this.raise())  //124 displacement marker replace with temporal
+                .waitSeconds(.2)
                 .addTemporalMarker(()-> this.stopEating()) //124 displacement marker replace with temporal
-                .lineToSplineHeading(new Pose2d(18, 86, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(20, 88, Math.toRadians(90)))
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
                 .waitSeconds(1)
                 .addDisplacementMarker(this::retract)
-                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
-                //.lineToSplineHeading(new Pose2d(49,-12, Math.toRadians(90)))
-                .addDisplacementMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
-                .lineToSplineHeading(new Pose2d(50, -20, Math.toRadians(90))) //second stack
-                .lineToSplineHeading(new Pose2d(50, -26, Math.toRadians(90))) //second stack
-                //.lineToSplineHeading(new Pose2d(49, -24, Math.toRadians(90)))
-                .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.6)
-                .addTemporalMarker(() -> this.moreEating())
-                //.waitSeconds(.1)
-                .forward(5)
-                .back(5)
-                .waitSeconds(.2)
-                .addTemporalMarker(() -> this.eat())
-                .waitSeconds(.4)
-                .addTemporalMarker(() -> this.moreEating())
-                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
-                .addTemporalMarker(() -> this.raise())
-                .addTemporalMarker(() -> this.stopEating())
-                .lineToSplineHeading(new Pose2d(23, 87, Math.toRadians(90)))
-                .waitSeconds(.5)
-                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
+                .strafeRight(6)  //park
+                .waitSeconds(2)
+                .back(4)
+//                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
+//                //.lineToSplineHeading(new Pose2d(49,-12, Math.toRadians(90)))
+//                .addDisplacementMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
+//                .lineToSplineHeading(new Pose2d(50, -20, Math.toRadians(90))) //second stack
+//                .lineToSplineHeading(new Pose2d(50, -26, Math.toRadians(90))) //second stack
+//                //.lineToSplineHeading(new Pose2d(49, -24, Math.toRadians(90)))
+//                .addTemporalMarker(() -> this.eat())
+//                .waitSeconds(.6)
+//                .addTemporalMarker(() -> this.moreEating())
+//                //.waitSeconds(.1)
+//                .forward(4)
+//                .back(4)
+//                .waitSeconds(.2)
+//                .addTemporalMarker(() -> this.eat())
+//                .waitSeconds(.4)
+//                .addTemporalMarker(() -> this.moreEating())
+//                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
+//                .addTemporalMarker(() -> this.raise())
+//                .waitSeconds(.2)
+//                .addTemporalMarker(() -> this.stopEating())
+//                .lineToSplineHeading(new Pose2d(23, 86, Math.toRadians(90)))
+//                .waitSeconds(.5)
+//                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
                 .waitSeconds(1)
                 .addTemporalMarker(() -> this.retract())
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence trajSeq_center = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d (27, 0, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d (29, 0, Math.toRadians(90)))
                 .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
                 .back(5)
                 .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
-                .lineToSplineHeading(new Pose2d(50,-6, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
-                .addDisplacementMarker(this::deposit)
-                .lineToSplineHeading(new Pose2d(32,75, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(32, 88, Math.toRadians(90)))
+                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
+                .lineToSplineHeading(new Pose2d(49,-22, Math.toRadians(90)))
+                .back(3)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.4)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(46, 70, Math.toRadians(90)))
+                .addTemporalMarker(() -> this.raise())  //124 displacement marker replace with temporal
+                .waitSeconds(.2)
+                .addTemporalMarker(()-> this.stopEating()) //124 displacement marker replace with temporal
+                .lineToSplineHeading(new Pose2d(27, 87, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
+                .waitSeconds(1)
                 .addDisplacementMarker(this::retract)
-                .lineToSplineHeading(new Pose2d(32,80, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
+                .addDisplacementMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeClosed))
+                .lineToSplineHeading(new Pose2d(50, -25, Math.toRadians(90))) //second stack
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.6)
+                .addTemporalMarker(() -> this.moreEating())
+                .forward(4)
+                .back(4)
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.eat())
+                .waitSeconds(.4)
+                .addTemporalMarker(() -> this.moreEating())
+                .lineToSplineHeading(new Pose2d(46,70, Math.toRadians(90)))
+                .addTemporalMarker(() -> this.raise())
+                .waitSeconds(.2)
+                .addTemporalMarker(() -> this.stopEating())
+                .lineToSplineHeading(new Pose2d(20, 86, Math.toRadians(90)))
+                .waitSeconds(.5)
+                .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
+                .waitSeconds(1)
+                .addTemporalMarker(() -> this.retract())
+                .waitSeconds(1)
                 .build();
 
         TrajectorySequence trajSeq_right = drive.trajectorySequenceBuilder(startPose)
@@ -219,5 +254,23 @@ public class Auto_Blue_Far extends LinearOpMode {
     public void stopEating() {
         robot.intake.setPower(0);
     }
+
+
+    /*
+    CENTER
+    .lineToSplineHeading(new Pose2d (27, 0, Math.toRadians(90)))
+                .addTemporalMarker(() -> robot.auto.setPosition(robot.AUTO_OPEN_POS))
+                .back(5)
+                .addDisplacementMarker(() -> robot.auto.setPosition(robot.AUTO_CLOSED_POS))
+                .lineToSplineHeading(new Pose2d(50,-6, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(50, 80, Math.toRadians(90)))
+                .addDisplacementMarker(this::deposit)
+                .lineToSplineHeading(new Pose2d(32,75, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(32, 88, Math.toRadians(90)))
+                .addDisplacementMarker(this::retract)
+                .lineToSplineHeading(new Pose2d(32,80, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(50,80, Math.toRadians(90)))
+                .build();
+     */
 }
 

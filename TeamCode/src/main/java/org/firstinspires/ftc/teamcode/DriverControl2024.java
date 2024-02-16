@@ -27,14 +27,14 @@ public class DriverControl2024 extends OpMode {
     LiftState liftState = LiftState.LIFT_LOWER;
 
     public static double CLOSEPOSITION = 0;
-    public static double FIRE = .5;
+    public static double FIRE = .15;
     public static double PINCHERLEFTOPEN = 0.1;
     public static double PINCHERLEFTCLOSE = 0.5;
     public static double PINCHERRIGHTOPEN = 0.1;
     public static double PINCHERRIGHTCLOSE = 0.5;
-    public static double outTakeClosed = 0.0;
-    public static double outTakeMiddle = 0.09;
-    public static double getOutTakeOpen = .15;
+    public static double outTakeClosed = 0.005;
+    public static double outTakeMiddle = 0.11;
+    public static double getOutTakeOpen = .16;
 
     boolean lastMovement1 = false; boolean currentMovement1 = false;
     boolean downPosition1 = true;
@@ -116,7 +116,7 @@ public class DriverControl2024 extends OpMode {
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFrontPower, rightFrontPower);
-        telemetry.addData("Status", "BRENNAN AND EGG MAN YOU BETTER NOT GET ANY PENALTIES OR ELSE . . .");
+        telemetry.addData("Status", "If we lose states, it is Belle's fault");
 
         if (Math.abs(gamepad2.left_trigger - gamepad2.right_trigger) > .1) {
             robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);

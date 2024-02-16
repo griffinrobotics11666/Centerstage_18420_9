@@ -41,7 +41,8 @@ public class WebcamTestBLUE extends LinearOpMode
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                //webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
                 FtcDashboard.getInstance().startCameraStream(webcam, 40);
             }
 

@@ -80,15 +80,15 @@ public class UtilityCameraFrameCapture extends LinearOpMode
     /*
      * EDIT THESE PARAMETERS AS NEEDED
      */
-    Telemetry telemetry;
+    //Telemetry telemetry;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     TelemetryPacket packet = new TelemetryPacket();
 
     final boolean USING_WEBCAM = true;
     final BuiltinCameraDirection INTERNAL_CAM_DIR = BuiltinCameraDirection.BACK;
-    final int RESOLUTION_WIDTH = 640;
-    final int RESOLUTION_HEIGHT = 480;
+    final int RESOLUTION_WIDTH = 800;
+    final int RESOLUTION_HEIGHT = 448;
 
     // Internal state
     boolean lastX;

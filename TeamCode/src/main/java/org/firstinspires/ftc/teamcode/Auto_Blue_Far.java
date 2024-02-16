@@ -110,7 +110,6 @@ public class Auto_Blue_Far extends LinearOpMode {
                 .waitSeconds(.5)
                 .addTemporalMarker(() -> robot.pixelBox.setPosition(DriverControl2024.outTakeMiddle))
                 .waitSeconds(1)
-                .addDisplacementMarker(this::retract)
                 .strafeRight(6)  //park
                 .waitSeconds(2)
                 .back(4)
